@@ -19,6 +19,7 @@
 
 # production
 /build
+/packages/novamotion-ui/dist/
 
 # misc
 .DS_Store
