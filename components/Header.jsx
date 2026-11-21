@@ -1,11 +1,11 @@
 
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
 import { Blocks, Home, Moon, Network, Sun } from 'lucide-react';
+import NovaMotionMascot from './NovaMotionMascot';
 import { SEARCH_ITEMS } from './searchItems';
 
 export default function Header() {
@@ -14,10 +14,6 @@ export default function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSearchResult, setActiveSearchResult] = useState(0);
-  const [emotion, setEmotion] = useState('happy');
-  const [blinking, setBlinking] = useState(false);
-
-  const mascotRef = useRef(null);
 
   const navItems = [
     { label: 'About', href: '/', Icon: Home },
@@ -41,70 +37,6 @@ export default function Header() {
       : href === '/'
         ? pathname === '/' || pathname === '/about'
         : pathname === href;
-
-  // Eye movement
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const eyeX = useSpring(mouseX, {
-    stiffness: 180,
-    damping: 20,
-  });
-
-  const eyeY = useSpring(mouseY, {
-    stiffness: 180,
-    damping: 20,
-  });
-
-  // Track cursor position relative to mascot
-  useEffect(() => {
-    const handleMouseMove = (event) => {
-      if (!mascotRef.current) return;
-
-      const rect = mascotRef.current.getBoundingClientRect();
-
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-
-      const dx = event.clientX - centerX;
-      const dy = event.clientY - centerY;
-
-      mouseX.set(Math.max(-3, Math.min(3, dx / 25)));
-      mouseY.set(Math.max(-3, Math.min(3, dy / 25)));
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, [mouseX, mouseY]);
-
-  // Automatic blinking
-  useEffect(() => {
-    let blinkTimeout;
-    let resetTimeout;
-
-    const blink = () => {
-      setBlinking(true);
-
-      resetTimeout = setTimeout(() => {
-        setBlinking(false);
-      }, 130);
-
-      blinkTimeout = setTimeout(
-        blink,
-        2200 + Math.random() * 2800
-      );
-    };
-
-    blinkTimeout = setTimeout(blink, 1500);
-
-    return () => {
-      clearTimeout(blinkTimeout);
-      clearTimeout(resetTimeout);
-    };
-  }, []);
 
   useEffect(() => {
     const savedTheme = window.localStorage.getItem('novamotion-theme');
@@ -196,44 +128,6 @@ export default function Header() {
     transition.finished.then(clearRevealStyles, clearRevealStyles);
   };
 
-  // Expression settings
-  const expressions = {
-    happy: {
-      mouthWidth: 9,
-      mouthHeight: 4,
-      mouthRadius: '0 0 10px 10px',
-      mouthBackground: 'transparent',
-      mouthBorder: '1.5px solid #18181B',
-      eyeScale: 1,
-    },
-    excited: {
-      mouthWidth: 7,
-      mouthHeight: 7,
-      mouthRadius: '50%',
-      mouthBackground: '#18181B',
-      mouthBorder: 'none',
-      eyeScale: 1.15,
-    },
-    curious: {
-      mouthWidth: 6,
-      mouthHeight: 3,
-      mouthRadius: '50%',
-      mouthBackground: 'transparent',
-      mouthBorder: '1.5px solid #18181B',
-      eyeScale: 1.15,
-    },
-    surprised: {
-      mouthWidth: 5,
-      mouthHeight: 7,
-      mouthRadius: '50%',
-      mouthBackground: '#18181B',
-      mouthBorder: 'none',
-      eyeScale: 1.2,
-    },
-  };
-
-  const currentExpression = expressions[emotion] || expressions.happy;
-
   return (
     <header className="relative z-50 w-full bg-white px-6 py-5 sm:px-14 sm:py-6">
       <div className="max-w-[1400px] mx-auto flex items-center justify-between">
@@ -248,99 +142,7 @@ export default function Header() {
           }}
           className="flex items-center gap-3 group focus:outline-none"
         >
-          <motion.div
-            ref={mascotRef}
-            onMouseEnter={() => setEmotion('excited')}
-            onMouseLeave={() => setEmotion('happy')}
-            animate={{
-              y: [0, -2, 0],
-            }}
-            transition={{
-              duration: 2.5,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-            className="w-10 h-10 rounded-full border-[1.8px] border-[#18181B] overflow-hidden bg-[#FFFDF7] relative shrink-0 shadow-sm cursor-pointer"
-          >
-            {/* Cream Foam */}
-            <div className="absolute top-0 left-0 w-full h-[53%]">
-
-              <span className="absolute top-[5px] left-[8px] w-[2.5px] h-[2.5px] rounded-full bg-[#18181B]" />
-
-              <span className="absolute top-[7px] right-[8px] w-[2.5px] h-[2.5px] rounded-full bg-[#18181B]" />
-
-            </div>
-
-            {/* Animated Eyes */}
-            <div className="absolute top-[12px] left-0 w-full flex justify-center items-center gap-[7px] z-20">
-
-              {[0, 1].map((eye) => (
-                <motion.div
-                  key={eye}
-                  style={{
-                    x: eyeX,
-                    y: eyeY,
-                  }}
-                  animate={{
-                    scaleY: blinking ? 0.08 : currentExpression.eyeScale,
-                  }}
-                  transition={{
-                    duration: 0.12,
-                    ease: 'easeOut',
-                  }}
-                  className="w-[6px] h-[7px] rounded-full bg-[#18181B] relative origin-center"
-                >
-                  {/* Eye Highlight */}
-                  <span className="absolute top-[1px] right-[1px] w-[2px] h-[2px] rounded-full bg-white" />
-                </motion.div>
-              ))}
-
-            </div>
-
-            {/* Animated Mouth */}
-            <motion.div
-              className="absolute z-20 left-1/2 -translate-x-1/2"
-              animate={{
-                width: currentExpression.mouthWidth,
-                height: currentExpression.mouthHeight,
-                borderRadius: currentExpression.mouthRadius,
-                backgroundColor: currentExpression.mouthBackground,
-                borderBottom: currentExpression.mouthBorder,
-                bottom: emotion === 'excited' ? 7 : 8,
-              }}
-              transition={{
-                duration: 0.2,
-                ease: 'easeOut',
-              }}
-            />
-
-            {/* Dark Liquid Wave */}
-            <svg
-              viewBox="0 0 40 22"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="absolute bottom-0 w-full h-[48%] block"
-              preserveAspectRatio="none"
-            >
-              <motion.path
-                d="M0 5C8 1 13 8 21 5C29 2 33 2 40 4V22H0V5Z"
-                fill="#18181B"
-                animate={{
-                  d: [
-                    'M0 5C8 1 13 8 21 5C29 2 33 2 40 4V22H0V5Z',
-                    'M0 3C8 7 13 2 21 4C29 7 33 1 40 5V22H0V3Z',
-                    'M0 5C8 1 13 8 21 5C29 2 33 2 40 4V22H0V5Z',
-                  ],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
-              />
-            </svg>
-
-          </motion.div>
+          <NovaMotionMascot />
 
           {/* Brand Name */}
           <span className="text-[15px] font-semibold tracking-[-0.015em] text-[#18181B]">

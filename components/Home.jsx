@@ -1,6 +1,7 @@
 import React from 'react';
 import { Cookie } from 'next/font/google';
 import Link from 'next/link';
+import Footer from './Footer';
 
 const cookieFont = Cookie({
   weight: '400',
@@ -128,6 +129,7 @@ export default function Home() {
           </a>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

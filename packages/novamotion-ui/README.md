@@ -50,7 +50,9 @@ Calendar: `MonthCalendar`.
 `MonthCalendar` supports controlled or default date selection, locale and week-start options, event markers, and keyboard navigation. Use `onChange` to receive the selected `Date`.
 Cursor: `CustomCursor`, `CursorTrail`, `CursorFollower`.
 Images: `ImageReveal`, `ParallaxImage`, `ImageCompare`.
-Loaders: `MorphingLoader`, `CircularLoader`, `ProgressBar`.
+Loaders: `MorphingLoader`, `CircularLoader`, `ProgressBar`, `SkeletonLoader`, `CanvasShadowLoader`.
+Search: `SearchBar` and `AutocompleteSearch`.
+`SearchBar` supports controlled or default input values, clear and submit actions, and an `onSearch` callback. `AutocompleteSearch` filters typed options and supports keyboard navigation and `onSelect`.
 Forms: `AuthCard`, `FloatingInput`, `AnimatedInput`, `ToggleSwitch`, `OTPInput`.
 Charts: `BarChart`, `LineChart`, and `DonutChart` accept optional `{ label, value }` data points and a title.
 Feedback: `RatingInput` supports controlled or default ratings; `Toast` provides a dismissible status message that can be reopened.

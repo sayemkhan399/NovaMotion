@@ -31,6 +31,14 @@ export { BarChart, DonutChart, LineChart } from "./Charts.js";
 export type { ChartPoint, ChartProps } from "./Charts.js";
 export { RatingInput, Toast } from "./Feedback.js";
 export type { RatingInputProps, ToastProps } from "./Feedback.js";
+export { CanvasShadowLoader, SkeletonLoader } from "./Loaders.js";
+export type { CanvasShadowLoaderProps, SkeletonLoaderProps } from "./Loaders.js";
+export { AutocompleteSearch, SearchBar } from "./Search.js";
+export type {
+  AutocompleteOption,
+  AutocompleteSearchProps,
+  SearchBarProps,
+} from "./Search.js";
 
 export type MotionButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 

@@ -7,12 +7,14 @@ import { createPortal } from 'react-dom';
 import { Laptop, Monitor, Smartphone } from 'lucide-react';
 import {
   AuthCard,
+  AutocompleteSearch,
   AnimatedInput,
   AnimatedButton,
   AuroraBackground,
   BarChart,
   BookingCard,
   BubbleNavigation,
+  CanvasShadowLoader,
   CircularLoader,
   CursorFollower,
   CursorTrail,
@@ -47,9 +49,11 @@ import {
   ProgressBar,
   RatingInput,
   RippleButton,
+  SearchBar,
   ScrambleText,
   ScrollParallax,
   ScrollReveal,
+  SkeletonLoader,
   SidebarNavigation,
   ShimmerButton,
   Social,
@@ -123,6 +127,57 @@ const CUSTOMIZATION_GUIDES = {
       ['The booking button className', 'Customize the primary action and focus ring.'],
     ],
     source: 'packages/novamotion-ui/src/BookingCard.tsx',
+  },
+  SearchBar: {
+    attributes: [
+      ['value / defaultValue', 'Set a controlled query or its initial value.'],
+      ['onChange', 'Called with the current query string.'],
+      ['onSearch', 'Called with the trimmed query when the form is submitted.'],
+      ['placeholder / label', 'Set the prompt text and accessible search name.'],
+      ['disabled', 'Disable editing and submit actions.'],
+      ['className', 'Tailwind classes applied to the search form.'],
+    ],
+    selectors: [
+      ['The root form className', 'Adjust the search field surface, border, shadow, and spacing.'],
+      ['The input className', 'Customize input typography, padding, and focus appearance.'],
+    ],
+    source: 'packages/novamotion-ui/src/Search.tsx',
+  },
+  AutocompleteSearch: {
+    attributes: [
+      ['options', 'Suggestion objects with label, value, and optional description.'],
+      ['value / defaultValue', 'Set a controlled query or its initial value.'],
+      ['onChange', 'Called with each query string as it changes.'],
+      ['onSelect', 'Called with the selected suggestion object.'],
+      ['placeholder / label', 'Set the prompt text and accessible search name.'],
+      ['className', 'Tailwind classes applied to the search wrapper.'],
+    ],
+    selectors: [
+      ['The root div className', 'Adjust the autocomplete width and outer spacing.'],
+      ['The listbox and option className values', 'Customize the suggestion panel and active result state.'],
+    ],
+    source: 'packages/novamotion-ui/src/Search.tsx',
+  },
+  SkeletonLoader: {
+    attributes: [
+      ['className', 'Tailwind classes applied to the skeleton card container.'],
+    ],
+    selectors: [
+      ['The root div className', 'Change the skeleton card width, surface, padding, border, and shadow.'],
+      ['Placeholder div className values', 'Adjust the avatar, image, text-line, and action placeholder shapes.'],
+    ],
+    source: 'packages/novamotion-ui/src/Loaders.tsx',
+  },
+  CanvasShadowLoader: {
+    attributes: [
+      ['label', 'Accessible loading status and visible preparation message.'],
+      ['className', 'Tailwind classes applied to the loader container.'],
+    ],
+    selectors: [
+      ['.novamotion-canvas-shadow', 'Adjust the moving shadow shapes and their colors.'],
+      ['The root div className', 'Change the canvas loader size, surface, border, and shadow.'],
+    ],
+    source: 'packages/novamotion-ui/src/Loaders.tsx',
   },
   MonthCalendar: {
     attributes: [
@@ -582,6 +637,18 @@ const COMPONENTS = {
     Component: ProgressBar,
     type: 'loader',
   },
+  'skeleton-loader': {
+    name: 'SkeletonLoader',
+    description: 'A content-shaped placeholder that gently pulses while data loads.',
+    Component: SkeletonLoader,
+    type: 'loader',
+  },
+  'canvas-shadow-loader': {
+    name: 'CanvasShadowLoader',
+    description: 'Soft, colorful shadows move behind a canvas preview while a creative workspace is prepared.',
+    Component: CanvasShadowLoader,
+    type: 'loader',
+  },
   'floating-input': {
     name: 'FloatingInput',
     description: 'An accessible input with a label that floats on focus.',
@@ -616,6 +683,18 @@ const COMPONENTS = {
     name: 'TravelSearch',
     description: 'A responsive travel booking search for flights, visas, hotels, and holiday packages, with animated tab transitions and a callback-ready search action.',
     Component: TravelSearch,
+    type: 'search',
+  },
+  'search-bar': {
+    name: 'SearchBar',
+    description: 'A clean, accessible search field with clear and submit actions.',
+    Component: SearchBar,
+    type: 'search',
+  },
+  'autocomplete-search': {
+    name: 'AutocompleteSearch',
+    description: 'A keyboard-friendly search input with filtered, selectable suggestions.',
+    Component: AutocompleteSearch,
     type: 'search',
   },
   'device-frame': {

@@ -6,12 +6,14 @@ import React, { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import {
   AuthCard,
+  AutocompleteSearch,
   AnimatedInput,
   AnimatedButton,
   AuroraBackground,
   BarChart,
   BookingCard,
   BubbleNavigation,
+  CanvasShadowLoader,
   CircularLoader,
   CursorFollower,
   CursorTrail,
@@ -41,6 +43,7 @@ import {
   ScrambleText,
   ScrollParallax,
   ScrollReveal,
+  SkeletonLoader,
   SidebarNavigation,
   SpotlightBackground,
   SplitText,
@@ -54,6 +57,7 @@ import {
   ShimmerButton,
   Social,
   RatingInput,
+  SearchBar,
   Toast,
 } from 'novamotion-ui';
 import CardPreview from './CardPreview';
@@ -62,10 +66,10 @@ import DUO_FLIP_IMAGES from './duoFlipImages';
 import TravelSearch from './TravelSearch';
 
 const CATEGORIES = [
-  { name: 'All', count: 55 },
+  { name: 'All', count: 59 },
   { name: 'Buttons', count: 8 },
   { name: 'Cards', count: 7 },
-  { name: 'Search', count: 1 },
+  { name: 'Search', count: 3 },
   { name: 'Frames', count: 1 },
   { name: 'Text', count: 5 },
   { name: 'Backgrounds', count: 5 },
@@ -73,7 +77,7 @@ const CATEGORIES = [
   { name: 'Calendar', count: 1 },
   { name: 'Cursor', count: 3 },
   { name: 'Images', count: 3 },
-  { name: 'Loaders', count: 3 },
+  { name: 'Loaders', count: 5 },
   { name: 'Forms', count: 5 },
   { name: 'Scroll', count: 3 },
   { name: 'Charts', count: 3 },
@@ -157,6 +161,8 @@ const LOADER_COMPONENTS = [
   { slug: 'morphing-loader', name: 'MorphingLoader', description: 'A soft shape morphs while loading.' },
   { slug: 'circular-loader', name: 'CircularLoader', description: 'A clear circular loading indicator.' },
   { slug: 'progress-bar', name: 'ProgressBar', description: 'A progress indicator with an adjustable value.' },
+  { slug: 'skeleton-loader', name: 'SkeletonLoader', description: 'A pulsing placeholder previews content while it loads.' },
+  { slug: 'canvas-shadow-loader', name: 'CanvasShadowLoader', description: 'Colorful soft shadows drift while a creative canvas is prepared.' },
 ];
 
 const FORM_COMPONENTS = [
@@ -169,6 +175,8 @@ const FORM_COMPONENTS = [
 
 const SEARCH_COMPONENTS = [
   { slug: 'travel-search', name: 'TravelSearch', description: 'A responsive travel search with flight, visa, hotel, and holiday tabs.' },
+  { slug: 'search-bar', name: 'SearchBar', description: 'A compact search field with clear and submit actions.' },
+  { slug: 'autocomplete-search', name: 'AutocompleteSearch', description: 'A keyboard-friendly search input with selectable suggestions.' },
 ];
 
 const FRAME_COMPONENTS = [
@@ -239,6 +247,8 @@ const COMPONENT_PREVIEWS = {
   MorphingLoader,
   CircularLoader,
   ProgressBar,
+  SkeletonLoader,
+  CanvasShadowLoader,
   FloatingInput,
   AnimatedInput,
   ToggleSwitch,
@@ -246,6 +256,8 @@ const COMPONENT_PREVIEWS = {
   AuthCard,
   DeviceFrame,
   TravelSearch,
+  SearchBar,
+  AutocompleteSearch,
   BarChart,
   LineChart,
   DonutChart,

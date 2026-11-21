@@ -43,11 +43,15 @@ export const COMPONENT_SLUGS = [
   'morphing-loader',
   'circular-loader',
   'progress-bar',
+  'skeleton-loader',
+  'canvas-shadow-loader',
   'floating-input',
   'animated-input',
   'toggle-switch',
   'otp-input',
   'travel-search',
+  'search-bar',
+  'autocomplete-search',
   'device-frame',
   'bar-chart',
   'line-chart',
@@ -60,7 +64,7 @@ export const COMPONENT_SLUGS = [
 ];
 
 const categoryForSlug = (slug) => {
-  if (slug === 'travel-search') return 'Search';
+  if (slug === 'travel-search' || slug === 'search-bar' || slug === 'autocomplete-search') return 'Search';
   if (slug === 'device-frame') return 'Frames';
   if (slug === 'auth-card') return 'Forms';
   if (slug.endsWith('-chart')) return 'Charts';
