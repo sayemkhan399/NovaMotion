@@ -6,6 +6,7 @@ export const COMPONENT_SLUGS = [
   'shimmer-button',
   'ripple-button',
   'liquid-glass-button',
+  'social',
   'duo-flip',
   'masonry-gallery',
   'thumbnail-carousel',
@@ -14,6 +15,9 @@ export const COMPONENT_SLUGS = [
   'glass-card',
   'flip-card',
   'gradient-card',
+  'course-card',
+  'booking-card',
+  'auth-card',
   'typewriter-text',
   'text-reveal',
   'gradient-text',
@@ -29,6 +33,7 @@ export const COMPONENT_SLUGS = [
   'sidebar-navigation',
   'bubble-navigation',
   'tab-bar',
+  'month-calendar',
   'custom-cursor',
   'cursor-trail',
   'cursor-follower',
@@ -42,17 +47,31 @@ export const COMPONENT_SLUGS = [
   'animated-input',
   'toggle-switch',
   'otp-input',
+  'travel-search',
+  'device-frame',
+  'bar-chart',
+  'line-chart',
+  'donut-chart',
+  'rating-input',
+  'toast',
   'scroll-reveal',
   'scroll-parallax',
   'sticky-scroll',
 ];
 
 const categoryForSlug = (slug) => {
+  if (slug === 'travel-search') return 'Search';
+  if (slug === 'device-frame') return 'Frames';
+  if (slug === 'auth-card') return 'Forms';
+  if (slug.endsWith('-chart')) return 'Charts';
+  if (slug === 'rating-input' || slug === 'toast') return 'Feedback';
+  if (slug === 'social') return 'Buttons';
   if (slug.endsWith('-button')) return 'Buttons';
   if (slug.endsWith('-card')) return 'Cards';
   if (slug.endsWith('-text')) return 'Text';
   if (slug.endsWith('-background')) return 'Backgrounds';
   if (slug.includes('navigation') || slug === 'tab-bar') return 'Navigation';
+  if (slug === 'month-calendar') return 'Calendar';
   if (slug.startsWith('floating-nav') || slug.startsWith('dock-') || slug.startsWith('bubble-') || slug.startsWith('sidebar-')) return 'Navigation';
   if (slug.startsWith('custom-cursor') || slug.startsWith('cursor-')) return 'Cursor';
   if (slug.includes('gallery') || slug === 'duo-flip' || slug === 'thumbnail-carousel') return 'Galleries';

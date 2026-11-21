@@ -15,7 +15,8 @@
 import * as React from "react";
 import { type ClassValue, clsx } from "clsx";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { useElementInView } from "./useElementInView.js";
 import { twMerge } from "tailwind-merge";
 
 // cn(): merges Tailwind classes, later ones win.
@@ -284,8 +285,8 @@ export const DuoFlip = React.forwardRef<HTMLDivElement, DuoFlipProps>(
     React.useImperativeHandle(ref, () => root.current as HTMLDivElement);
     const stage = React.useRef<HTMLDivElement>(null);
     const canvas = React.useRef<HTMLCanvasElement>(null);
-    const inView = useInView(root, { amount: 0.25 });
-    const seen = useInView(root, { once: true, amount: 0.3 });
+    const inView = useElementInView(root, { amount: 0.25 });
+    const seen = useElementInView(root, { once: true, amount: 0.3 });
     const n = images.length;
     const [index, setIndex] = React.useState(0);
     const [ready, setReady] = React.useState(false);
@@ -424,8 +425,9 @@ export const DuoFlip = React.forwardRef<HTMLDivElement, DuoFlipProps>(
       const sizes = images.map(() => ({ w: 1, h: 1 }));
       let alive = true;
       let loaded = 0;
+      const ImageConstructor = box.ownerDocument.defaultView?.Image ?? Image;
       images.forEach((im, i) => {
-        const img = new Image();
+        const img = new ImageConstructor();
         img.crossOrigin = "anonymous";
         img.decoding = "async";
         img.onload = () => {
@@ -517,12 +519,21 @@ export const DuoFlip = React.forwardRef<HTMLDivElement, DuoFlipProps>(
       };
       api.current = { draw };
       draw();
-      const ro = new ResizeObserver(draw);
-      ro.observe(box);
+      const view = box.ownerDocument.defaultView;
+      const ResizeObserverConstructor = view?.ResizeObserver;
+      const ro = ResizeObserverConstructor
+        ? new ResizeObserverConstructor(draw)
+        : null;
+      if (ro) {
+        ro.observe(box);
+      } else {
+        view?.addEventListener("resize", draw);
+      }
       return () => {
         alive = false;
         cancelAnimationFrame(raf.current);
-        ro.disconnect();
+        ro?.disconnect();
+        if (!ro) view?.removeEventListener("resize", draw);
         api.current = null;
         textures.forEach((t) => gl.deleteTexture(t));
         gl.deleteProgram(prog);

@@ -15,9 +15,9 @@ import {
   AnimatePresence,
   LayoutGroup,
   motion,
-  useInView,
   useReducedMotion,
 } from "motion/react";
+import { useElementInView } from "./useElementInView.js";
 
 export type TabIcon =
   | "home"
@@ -85,7 +85,7 @@ export function TabBar({
 }: TabBarProps) {
   const reducedMotion = useReducedMotion();
   const rootRef = useRef<HTMLElement>(null);
-  const isInView = useInView(rootRef, { once: true, amount: 0.4 });
+  const isInView = useElementInView(rootRef, { once: true, amount: 0.4 });
   const [internalValue, setInternalValue] = useState(
     defaultValue ?? tabs[0]?.id ?? "",
   );

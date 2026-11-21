@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { Blocks, Home, Moon, Network, Sun } from 'lucide-react';
 import { SEARCH_ITEMS } from './searchItems';
 
 export default function Header() {
@@ -13,16 +14,15 @@ export default function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSearchResult, setActiveSearchResult] = useState(0);
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [emotion, setEmotion] = useState('happy');
   const [blinking, setBlinking] = useState(false);
 
   const mascotRef = useRef(null);
 
   const navItems = [
-    { label: 'About', href: '/' },
-    { label: 'Components', href: '/components' },
-    { label: 'MCP', href: '/mcp' },
+    { label: 'About', href: '/', Icon: Home },
+    { label: 'Components', href: '/components', Icon: Blocks },
+    { label: 'MCP', href: '/mcp', Icon: Network },
   ];
 
   const normalizedQuery = searchQuery.trim().toLowerCase().replace(/[\s-]/g, '');
@@ -116,7 +116,6 @@ export default function Header() {
     const handleShortcut = (event) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
         event.preventDefault();
-        setMobileNavOpen(false);
         setSearchOpen((open) => !open);
       } else if (event.key === 'Escape') {
         setSearchOpen(false);
@@ -158,12 +157,43 @@ export default function Header() {
     }
   };
 
-  const toggleTheme = () => {
-    const currentTheme =
-      document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+  const toggleTheme = (event) => {
+    const root = document.documentElement;
+    const currentTheme = root.dataset.theme === 'dark' ? 'dark' : 'light';
     const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    document.documentElement.dataset.theme = nextTheme;
-    window.localStorage.setItem('novamotion-theme', nextTheme);
+    const updateTheme = () => {
+      root.dataset.theme = nextTheme;
+      window.localStorage.setItem('novamotion-theme', nextTheme);
+    };
+
+    if (
+      typeof document.startViewTransition !== 'function' ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      updateTheme();
+      return;
+    }
+
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const x = bounds.left + bounds.width / 2;
+    const y = bounds.top + bounds.height / 2;
+    const radius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    );
+
+    root.style.setProperty('--theme-reveal-x', `${x}px`);
+    root.style.setProperty('--theme-reveal-y', `${y}px`);
+    root.style.setProperty('--theme-reveal-radius', `${radius}px`);
+
+    const transition = document.startViewTransition(updateTheme);
+    const clearRevealStyles = () => {
+      root.style.removeProperty('--theme-reveal-x');
+      root.style.removeProperty('--theme-reveal-y');
+      root.style.removeProperty('--theme-reveal-radius');
+    };
+
+    transition.finished.then(clearRevealStyles, clearRevealStyles);
   };
 
   // Expression settings
@@ -214,7 +244,6 @@ export default function Header() {
           aria-label="NovaMotion Home"
           aria-current={pathname === '/' ? 'page' : undefined}
           onClick={() => {
-            setMobileNavOpen(false);
             setSearchOpen(false);
           }}
           className="flex items-center gap-3 group focus:outline-none"
@@ -331,10 +360,7 @@ export default function Header() {
                 key={label}
                 href={href}
                 aria-current={active ? 'page' : undefined}
-                onClick={() => {
-                  setMobileNavOpen(false);
-                  setSearchOpen(false);
-                }}
+                onClick={() => setSearchOpen(false)}
                 className={`px-4 py-1.5 rounded-full text-[13.5px] transition-all duration-200 cursor-pointer ${
                   active
                     ? 'bg-white text-[#18181B] font-medium shadow-[0_1px_3px_rgba(0,0,0,0.08)]'
@@ -347,21 +373,6 @@ export default function Header() {
           })}
         </nav>
 
-        <button
-          type="button"
-          aria-label={mobileNavOpen ? 'Close navigation menu' : 'Open navigation menu'}
-          aria-expanded={mobileNavOpen}
-          onClick={() => {
-            setSearchOpen(false);
-            setMobileNavOpen((open) => !open);
-          }}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F4F4F5] text-[#18181B] sm:hidden"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            {mobileNavOpen ? <path d="m6 6 12 12M18 6 6 18" /> : <path d="M4 6h16M4 12h16M4 18h16" />}
-          </svg>
-        </button>
-
         {/* Right: Search & Theme Toggle */}
         <div className="flex items-center gap-2.5">
 
@@ -371,7 +382,6 @@ export default function Header() {
             aria-label={searchOpen ? 'Close search' : 'Search components'}
             aria-expanded={searchOpen}
             onClick={() => {
-              setMobileNavOpen(false);
               setSearchQuery(
                 new URLSearchParams(window.location.search).get('search') ?? ''
               );
@@ -398,48 +408,54 @@ export default function Header() {
           {/* Theme Toggle */}
           <button
             type="button"
-          aria-label="Toggle color theme"
-          title="Toggle light and dark themes"
+            aria-label="Toggle color theme"
+            title="Toggle light and dark themes"
             onClick={toggleTheme}
             className="w-10 h-10 rounded-full bg-[#F4F4F5] hover:bg-[#E4E4E7]/70 flex items-center justify-center text-[#18181B] transition-colors cursor-pointer"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-              <path d="M19 3v4M21 5h-4" />
-            </svg>
+            <Moon
+              aria-hidden="true"
+              className="theme-toggle-moon"
+              size={16}
+              strokeWidth={1.9}
+            />
+            <Sun
+              aria-hidden="true"
+              className="theme-toggle-sun"
+              size={16}
+              strokeWidth={1.9}
+            />
           </button>
 
         </div>
       </div>
 
-      {mobileNavOpen && (
-        <nav
-          aria-label="Mobile primary navigation"
-          className="absolute left-4 right-4 top-full flex flex-col gap-1 rounded-2xl border border-black/[0.05] bg-white p-2 shadow-lg sm:hidden"
-        >
-          {navItems.map(({ label, href }) => {
+      <nav
+        aria-label="Mobile primary navigation"
+        className="fixed inset-x-0 bottom-0 z-[60] border-t border-black/[0.06] bg-white px-4 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] shadow-[0_-8px_24px_rgba(0,0,0,0.04)] sm:hidden"
+      >
+        <div className="mx-auto grid max-w-[480px] grid-cols-3 gap-2">
+          {navItems.map(({ label, href, Icon }) => {
             const active = isActive(href);
             return (
               <Link
                 key={label}
                 href={href}
                 aria-current={active ? 'page' : undefined}
-                onClick={() => {
-                  setMobileNavOpen(false);
-                  setSearchOpen(false);
-                }}
-                className={`rounded-xl px-4 py-3 text-sm ${
+                onClick={() => setSearchOpen(false)}
+                className={`flex min-h-11 flex-col items-center justify-center gap-1 rounded-xl text-[10px] font-medium transition-colors ${
                   active
-                    ? 'bg-[#F4F4F5] font-semibold text-[#18181B]'
-                    : 'text-[#52525B]'
+                    ? 'bg-[#F4F4F5] text-[#18181B]'
+                    : 'text-[#71717A] hover:bg-[#FAFAFA] hover:text-[#18181B]'
                 }`}
               >
+                <Icon aria-hidden="true" size={19} strokeWidth={1.8} />
                 {label}
               </Link>
             );
           })}
-        </nav>
-      )}
+        </div>
+      </nav>
 
       {searchOpen && (
         <div

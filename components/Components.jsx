@@ -1,27 +1,37 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
+import { motion, useReducedMotion } from 'motion/react';
 import {
+  AuthCard,
   AnimatedInput,
   AnimatedButton,
   AuroraBackground,
+  BarChart,
+  BookingCard,
   BubbleNavigation,
   CircularLoader,
   CursorFollower,
   CursorTrail,
+  CourseCard,
   CustomCursor,
+  DeviceFrame,
+  DonutChart,
   DockNavigation,
-  DuoFlip,
   FloatingInput,
   FloatingNavbar,
   GradientButton,
   GlowButton,
+  GsapInteractive,
   GradientText,
   GridBackground,
   ImageCompare,
   ImageReveal,
+  LineChart,
   LiquidGlassButton,
+  MonthCalendar,
   MorphingLoader,
   MeteorsBackground,
   OTPInput,
@@ -42,74 +52,33 @@ import {
   MagneticButton,
   RippleButton,
   ShimmerButton,
+  Social,
+  RatingInput,
+  Toast,
 } from 'novamotion-ui';
 import CardPreview from './CardPreview';
 import GalleryDemos from './GalleryDemos';
 import DUO_FLIP_IMAGES from './duoFlipImages';
+import TravelSearch from './TravelSearch';
 
 const CATEGORIES = [
-  { name: 'All', count: 43 },
-  { name: 'Buttons', count: 7 },
-  { name: 'Cards', count: 5 },
+  { name: 'All', count: 55 },
+  { name: 'Buttons', count: 8 },
+  { name: 'Cards', count: 7 },
+  { name: 'Search', count: 1 },
+  { name: 'Frames', count: 1 },
   { name: 'Text', count: 5 },
   { name: 'Backgrounds', count: 5 },
   { name: 'Navigation', count: 5 },
+  { name: 'Calendar', count: 1 },
   { name: 'Cursor', count: 3 },
   { name: 'Images', count: 3 },
   { name: 'Loaders', count: 3 },
-  { name: 'Forms', count: 4 },
+  { name: 'Forms', count: 5 },
   { name: 'Scroll', count: 3 },
-  { name: 'Charts', count: 14 },
+  { name: 'Charts', count: 3 },
   { name: 'Galleries', count: 4 },
   { name: 'Feedback', count: 2 },
-];
-
-const BILLS = [
-  {
-    id: 1,
-    title: 'Home internet',
-    due: 'In 2 days',
-    isUrgent: true,
-    autopay: false,
-    amount: '$49.00',
-    icon: 'wifi',
-  },
-  {
-    id: 2,
-    title: 'Electricity',
-    due: 'Due Nov 24',
-    isUrgent: false,
-    autopay: false,
-    amount: '$86.30',
-    icon: 'bolt',
-  },
-  {
-    id: 3,
-    title: 'Phone plan',
-    due: 'Due Nov 26',
-    isUrgent: false,
-    autopay: true,
-    amount: '$25.00',
-    icon: 'phone',
-  },
-  {
-    id: 4,
-    title: 'Cloud backup',
-    due: 'Due Nov 29',
-    isUrgent: false,
-    autopay: true,
-    amount: '$9.99',
-    icon: 'cloud',
-  },
-  {
-    id: 5,
-    title: 'Gym membership',
-    due: 'Due Dec 2',
-    isUrgent: false,
-    autopay: false,
-    amount: '$42.19',
-    icon: 'heart',
-  },
 ];
 
 const BUTTON_COMPONENTS = [
@@ -120,6 +89,7 @@ const BUTTON_COMPONENTS = [
   { slug: 'shimmer-button', name: 'ShimmerButton', description: 'A light sweep passes across the surface.' },
   { slug: 'ripple-button', name: 'RippleButton', description: 'A ripple effect on press.' },
   { slug: 'liquid-glass-button', name: 'LiquidGlassButton', description: 'A translucent glass button with a pointer-following highlight.' },
+  { slug: 'social', name: 'Social', description: 'Google, GitHub, and Apple sign-in buttons with provider callbacks.' },
 ];
 
 const BUTTON_PREVIEWS = {
@@ -130,6 +100,7 @@ const BUTTON_PREVIEWS = {
   ShimmerButton,
   RippleButton,
   LiquidGlassButton,
+  Social,
 };
 
 const CARD_COMPONENTS = [
@@ -138,6 +109,8 @@ const CARD_COMPONENTS = [
   { slug: 'glass-card', name: 'GlassCard', description: 'A translucent glass surface with a soft blur.' },
   { slug: 'flip-card', name: 'FlipCard', description: 'Click to flip between the front and back.' },
   { slug: 'gradient-card', name: 'GradientCard', description: 'A vivid gradient edge frames the card.' },
+  { slug: 'course-card', name: 'CourseCard', description: 'A responsive course card with a layered wave illustration.' },
+  { slug: 'booking-card', name: 'BookingCard', description: 'An animated appointment card for choosing a date and time.' },
 ];
 
 const TEXT_COMPONENTS = [
@@ -164,6 +137,10 @@ const NAVIGATION_COMPONENTS = [
   { slug: 'tab-bar', name: 'TabBar', description: 'An animated tab bar with pill, labeled, and action styles.' },
 ];
 
+const CALENDAR_COMPONENTS = [
+  { slug: 'month-calendar', name: 'MonthCalendar', description: 'An interactive monthly calendar with event markers and keyboard navigation.' },
+];
+
 const CURSOR_COMPONENTS = [
   { slug: 'custom-cursor', name: 'CustomCursor', description: 'A custom ring follows the pointer.' },
   { slug: 'cursor-trail', name: 'CursorTrail', description: 'A fading trail follows pointer movement.' },
@@ -183,10 +160,30 @@ const LOADER_COMPONENTS = [
 ];
 
 const FORM_COMPONENTS = [
+  { slug: 'auth-card', name: 'AuthCard', description: 'A responsive sign-in and sign-up form with backend-ready callbacks.' },
   { slug: 'floating-input', name: 'FloatingInput', description: 'A label floats above the entered value.' },
   { slug: 'animated-input', name: 'AnimatedInput', description: 'An input animates its focus ring.' },
   { slug: 'toggle-switch', name: 'ToggleSwitch', description: 'A keyboard-accessible on/off switch.' },
   { slug: 'otp-input', name: 'OTPInput', description: 'A multi-digit verification code input.' },
+];
+
+const SEARCH_COMPONENTS = [
+  { slug: 'travel-search', name: 'TravelSearch', description: 'A responsive travel search with flight, visa, hotel, and holiday tabs.' },
+];
+
+const FRAME_COMPONENTS = [
+  { slug: 'device-frame', name: 'DeviceFrame', description: 'Responsive iOS, Android, and watch frames for custom screen content.' },
+];
+
+const CHART_COMPONENTS = [
+  { slug: 'bar-chart', name: 'BarChart', description: 'Compare values at a glance with a clean, responsive bar chart.' },
+  { slug: 'line-chart', name: 'LineChart', description: 'Show trends over time with an accessible, responsive line chart.' },
+  { slug: 'donut-chart', name: 'DonutChart', description: 'Break down a total into clear, color-coded segments.' },
+];
+
+const FEEDBACK_COMPONENTS = [
+  { slug: 'rating-input', name: 'RatingInput', description: 'Collect an interactive, accessible star rating.' },
+  { slug: 'toast', name: 'Toast', description: 'Show a dismissible status message with a clear action.' },
 ];
 
 const SCROLL_COMPONENTS = [
@@ -201,16 +198,22 @@ const ALL_COMPONENTS = [
   ...TEXT_COMPONENTS.map((component) => ({ ...component, category: 'Text' })),
   ...BACKGROUND_COMPONENTS.map((component) => ({ ...component, category: 'Backgrounds' })),
   ...NAVIGATION_COMPONENTS.map((component) => ({ ...component, category: 'Navigation' })),
+  ...CALENDAR_COMPONENTS.map((component) => ({ ...component, category: 'Calendar' })),
   ...CURSOR_COMPONENTS.map((component) => ({ ...component, category: 'Cursor' })),
   ...IMAGE_COMPONENTS.map((component) => ({ ...component, category: 'Images' })),
   ...LOADER_COMPONENTS.map((component) => ({ ...component, category: 'Loaders' })),
   ...FORM_COMPONENTS.map((component) => ({ ...component, category: 'Forms' })),
+  ...SEARCH_COMPONENTS.map((component) => ({ ...component, category: 'Search' })),
+  ...FRAME_COMPONENTS.map((component) => ({ ...component, category: 'Frames' })),
+  ...CHART_COMPONENTS.map((component) => ({ ...component, category: 'Charts' })),
+  ...FEEDBACK_COMPONENTS.map((component) => ({ ...component, category: 'Feedback' })),
   ...SCROLL_COMPONENTS.map((component) => ({ ...component, category: 'Scroll' })),
 ];
 
 const COMPONENT_PREVIEWS = {
   ...BUTTON_PREVIEWS,
   ...Object.fromEntries(CARD_COMPONENTS.map((component) => [component.name, null])),
+  BookingCard,
   TypewriterText,
   TextReveal,
   GradientText,
@@ -221,6 +224,7 @@ const COMPONENT_PREVIEWS = {
   GridBackground,
   SpotlightBackground,
   MeteorsBackground,
+  MonthCalendar,
   FloatingNavbar,
   DockNavigation,
   SidebarNavigation,
@@ -239,17 +243,25 @@ const COMPONENT_PREVIEWS = {
   AnimatedInput,
   ToggleSwitch,
   OTPInput,
+  AuthCard,
+  DeviceFrame,
+  TravelSearch,
+  BarChart,
+  LineChart,
+  DonutChart,
+  RatingInput,
+  Toast,
   ScrollReveal,
   ScrollParallax,
   StickyScroll,
+  CourseCard,
 };
 
 export default function Components() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [isBookmarked, setIsBookmarked] = useState(false);
-  const [billFilter, setBillFilter] = useState('All');
+  const [previewRevisions, setPreviewRevisions] = useState({});
+  const shouldAnimate = useReducedMotion() === false;
 
   useEffect(() => {
     const syncSearch = (event) => {
@@ -279,16 +291,30 @@ export default function Components() {
     'Text',
     'Backgrounds',
     'Navigation',
+    'Calendar',
     'Cursor',
     'Images',
     'Loaders',
     'Forms',
     'Scroll',
+    'Search',
+    'Frames',
+    'Charts',
+    'Feedback',
   ].includes(selectedCategory);
   const filteredComponents = ALL_COMPONENTS.filter(
-    (component) =>
-      (selectedCategory === 'All' || component.category === selectedCategory) &&
-      component.name.toLowerCase().includes(searchQuery.trim().toLowerCase())
+    (component) => {
+      const query = searchQuery.trim().toLowerCase();
+      const matchesCategory =
+        selectedCategory === 'All' || component.category === selectedCategory;
+      const matchesQuery =
+        !query ||
+        `${component.name} ${component.description} ${component.category}`
+          .toLowerCase()
+          .includes(query);
+
+      return matchesCategory && matchesQuery;
+    }
   );
   const totalInSelection =
     selectedCategory === 'All'
@@ -296,58 +322,51 @@ export default function Components() {
       : ALL_COMPONENTS.filter((component) => component.category === selectedCategory)
           .length;
 
-  const filteredBills =
-    billFilter === 'Autopay'
-      ? BILLS.filter((b) => b.autopay)
-      : BILLS;
-
-  const renderBillIcon = (type) => {
-    switch (type) {
-      case 'wifi':
-        return (
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M5 12.55a11 11 0 0 1 14.08 0" />
-            <path d="M1.42 9a16 16 0 0 1 21.16 0" />
-            <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
-            <line x1="12" y1="20" x2="12.01" y2="20" />
-          </svg>
-        );
-      case 'bolt':
-        return (
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-          </svg>
-        );
-      case 'phone':
-        return (
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
-            <line x1="12" y1="18" x2="12.01" y2="18" />
-          </svg>
-        );
-      case 'cloud':
-        return (
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
-          </svg>
-        );
-      case 'heart':
-        return (
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-          </svg>
-        );
-      default:
-        return null;
-    }
+  const clearSearch = () => {
+    setSearchQuery('');
+    const url = new URL(window.location.href);
+    url.searchParams.delete('search');
+    window.history.replaceState(null, '', url);
   };
 
   return (
-    <section className="w-full bg-white text-[#18181B] px-6 sm:px-10 py-8">
-      <div className="max-w-[1440px] mx-auto flex flex-col lg:flex-row gap-8 items-start">
-        {/* LEFT SIDEBAR: Search + Category Filter Options */}
-        <aside className="w-full lg:w-[235px] shrink-0 lg:sticky lg:top-6">
-          {/* Search Input */}
+    <section className="w-full bg-[#FAFAFA] px-5 py-10 text-[#18181B] sm:px-8 lg:px-10 lg:py-14">
+      <div className="mx-auto max-w-[1440px]">
+        <div className="mb-9 flex flex-col justify-between gap-6 border-b border-black/[0.06] pb-8 sm:flex-row sm:items-end lg:mb-10 lg:pb-10">
+          <div className="max-w-3xl">
+            <span className="inline-flex items-center gap-2 rounded-full border border-black/[0.07] bg-white px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#52525B] shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
+              <span className="size-1.5 rounded-full bg-[#FFDD00]" />
+              The NovaMotion library
+            </span>
+            <h1 className="mt-5 text-4xl font-semibold tracking-[-0.045em] text-[#18181B] sm:text-5xl lg:text-[60px] lg:leading-[1.05]">
+              Small details.
+              <br className="hidden sm:block" /> Big motion.
+            </h1>
+            <p className="mt-4 max-w-2xl text-[15px] leading-7 text-[#71717A] sm:text-base">
+              Explore polished, interactive building blocks for interfaces
+              that feel a little more alive. Preview each one, then make it
+              yours.
+            </p>
+          </div>
+          <div className="flex shrink-0 items-center gap-3 rounded-2xl border border-black/[0.06] bg-white px-4 py-3 shadow-[0_4px_18px_rgba(0,0,0,0.03)]">
+            <div className="grid size-10 place-items-center rounded-xl bg-[#F4F4F5] text-[#18181B]">
+              <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                <rect x="14" y="14" width="7" height="7" rx="1.5" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-xl font-semibold leading-none tracking-tight">{ALL_COMPONENTS.length}</p>
+              <p className="mt-1 text-[11px] font-medium text-[#71717A]">ready-to-use components</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col items-start gap-6 lg:flex-row lg:gap-8">
+        <aside className="w-full shrink-0 lg:sticky lg:top-6 lg:w-[238px]">
+          <div className="rounded-[22px] border border-black/[0.06] bg-white p-4 shadow-[0_8px_28px_rgba(0,0,0,0.035)]">
           <div className="relative mb-5">
             <svg
               className="w-4 h-4 text-[#71717A] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
@@ -365,93 +384,188 @@ export default function Components() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              aria-label="Search components"
               placeholder="Search components..."
-              className="w-full pl-9 pr-3 py-2 text-[13.5px] bg-[#F4F4F5] text-[#18181B] placeholder:text-[#71717A] rounded-xl border border-transparent focus:border-[#E4E4E7] focus:bg-white focus:outline-none transition-all"
+              className="w-full rounded-xl border border-transparent bg-[#F4F4F5] py-3 pl-10 pr-10 text-[13px] text-[#18181B] transition-all placeholder:text-[#71717A] focus:border-[#E4E4E7] focus:bg-white focus:outline-none focus:ring-4 focus:ring-black/[0.03]"
             />
+            {searchQuery && (
+              <button
+                type="button"
+                aria-label="Clear component search"
+                onClick={clearSearch}
+                className="absolute right-2 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-lg text-[#71717A] transition-colors hover:bg-white hover:text-[#18181B]"
+              >
+                <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <path d="m18 6-12 12M6 6l12 12" />
+                </svg>
+              </button>
+            )}
           </div>
 
-          <div className="mb-2 flex items-center justify-between px-2">
-            <span className="text-[11.5px] font-semibold uppercase tracking-wider text-[#A1A1AA]">
+          <div className="mb-3 flex items-center justify-between px-1">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A1A1AA]">
               Categories
             </span>
             <button
               type="button"
               onClick={() => {
                 setSelectedCategory('All');
-                setSearchQuery('');
+                clearSearch();
               }}
-              className="text-[10px] font-medium text-[#A1A1AA] transition-colors hover:text-[#18181B]"
+              className="text-[11px] font-medium text-[#A1A1AA] transition-colors hover:text-[#18181B]"
             >
-              Deselect all
+              Reset
             </button>
           </div>
 
-          {/* Sidebar Filter List */}
           <nav
             aria-label="Component categories"
-            className="flex lg:flex-col gap-1 overflow-x-auto pb-2 lg:pb-0"
+            className="flex gap-1.5 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible lg:pb-0"
           >
             {CATEGORIES.map((category) => {
               const isSelected = selectedCategory === category.name;
+              const categoryCount =
+                category.name === 'All'
+                  ? ALL_COMPONENTS.length
+                  : category.name === 'Galleries'
+                    ? category.count
+                    : ALL_COMPONENTS.filter(
+                        (component) => component.category === category.name
+                      ).length;
               return (
                 <button
                   key={category.name}
                   type="button"
                   onClick={() => setSelectedCategory(category.name)}
-                  className={`flex items-center justify-between gap-3 px-3.5 py-2 rounded-full lg:rounded-xl text-[13.5px] whitespace-nowrap transition-all cursor-pointer ${
+                  aria-pressed={isSelected}
+                  className={`flex shrink-0 items-center justify-between gap-3 rounded-full px-3.5 py-2.5 text-[12px] whitespace-nowrap transition-all cursor-pointer lg:w-full lg:rounded-xl ${
                     isSelected
-                      ? 'bg-[#18181B] text-white font-medium shadow-xs'
-                      : 'text-[#52525B] hover:bg-[#F4F4F5] hover:text-[#18181B] font-normal'
+                      ? 'bg-[#18181B] font-medium text-white shadow-[0_4px_12px_rgba(24,24,27,0.16)]'
+                      : 'font-normal text-[#52525B] hover:bg-[#F4F4F5] hover:text-[#18181B]'
                   }`}
                 >
                   <span>{category.name}</span>
                   <span
-                    className={`text-[12px] ${
-                      isSelected ? 'text-[#A1A1AA]' : 'text-[#A1A1AA]'
+                    className={`min-w-6 rounded-full px-1.5 py-0.5 text-center text-[10px] ${
+                      isSelected ? 'bg-white/10 text-white/70' : 'bg-[#F4F4F5] text-[#A1A1AA]'
                     }`}
                   >
-                    {category.count}
+                    {categoryCount}
                   </span>
                 </button>
               );
             })}
           </nav>
+          </div>
         </aside>
 
-        {/* RIGHT CONTENT AREA */}
-        <div className="flex-1 w-full">
-          {/* Top Count Indicator */}
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-[15px] font-semibold text-[#18181B]">
-              {selectedCategory} {isGalleryCategory ? 'Options' : 'Components'}
-            </h2>
-            <span className="text-[13px] text-[#71717A]">
+        <div className="min-w-0 w-full flex-1">
+          <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A1A1AA]">Browse the collection</p>
+              <h2 className="mt-1 text-xl font-semibold tracking-tight text-[#18181B]">
+                {selectedCategory === 'All'
+                  ? 'All components'
+                  : `${selectedCategory} ${isGalleryCategory ? 'options' : 'components'}`}
+              </h2>
+            </div>
+            <span className="rounded-full border border-black/[0.06] bg-white px-3 py-1.5 text-[11px] font-medium text-[#71717A]">
               Showing {isGalleryCategory ? 4 : isCatalogCategory ? filteredComponents.length : activeCategoryObj.count} of{' '}
               {isGalleryCategory ? 4 : isCatalogCategory ? totalInSelection : 100}
             </span>
           </div>
 
-          {/* 3-Column Component Showcase Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div
+            className={
+              isCatalogCategory
+                ? 'grid grid-cols-1 items-stretch gap-4 sm:grid-cols-2 xl:gap-5 2xl:grid-cols-3'
+                : 'grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3'
+            }
+          >
             {isGalleryCategory ? (
               <GalleryDemos images={DUO_FLIP_IMAGES} />
             ) : isCatalogCategory ? (
               filteredComponents.length > 0 ? (
-                filteredComponents.map((component) => {
+                filteredComponents.map((component, index) => {
                   const Preview = COMPONENT_PREVIEWS[component.name];
 
                   return (
-                    <article
-                      key={component.name}
-                      className="min-h-[280px] rounded-[24px] border border-black/[0.03] bg-[#F6F6F6] p-5 flex flex-col"
+                    <motion.div
+                      key={component.slug}
+                      initial={
+                        shouldAnimate
+                          ? { opacity: 0, y: 18, scale: 0.985 }
+                          : false
+                      }
+                      whileInView={
+                        shouldAnimate
+                          ? { opacity: 1, y: 0, scale: 1 }
+                          : undefined
+                      }
+                      viewport={{ once: true, amount: 0.12 }}
+                      transition={
+                        shouldAnimate
+                          ? {
+                              duration: 0.48,
+                              delay: (index % 3) * 0.045,
+                              ease: [0.22, 1, 0.36, 1],
+                            }
+                          : { duration: 0 }
+                      }
+                      className={`h-full ${
+                        component.name === 'TravelSearch'
+                          ? 'col-span-full w-full max-w-[960px] justify-self-center'
+                          : 'w-full'
+                      }`}
                     >
-                      <span className="self-start rounded-full bg-white px-2.5 py-1 text-[11.5px] font-medium text-[#52525B] shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-                        {component.category}
-                      </span>
+                      <GsapInteractive
+                        as="article"
+                        className="group flex h-full flex-col rounded-[22px] border border-black/[0.06] bg-white p-4 shadow-[0_4px_20px_rgba(0,0,0,0.025)] transition-all duration-300 hover:-translate-y-1 hover:border-black/[0.1] hover:shadow-[0_18px_42px_rgba(0,0,0,0.08)] sm:p-5"
+                      >
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="rounded-full bg-[#F4F4F5] px-2.5 py-1 text-[10px] font-semibold text-[#52525B]">
+                          {component.category}
+                        </span>
+                        <span className="text-[10px] font-medium text-[#A1A1AA]">Interactive preview</span>
+                      </div>
 
-                      <div className="flex flex-1 items-center justify-center py-8">
-                        {component.category === 'Cards' ? (
+                      <div
+                        key={`${component.slug}-${previewRevisions[component.slug] ?? 0}`}
+                        className="my-4 flex min-h-[230px] flex-1 items-center justify-center overflow-hidden rounded-[17px] border border-black/[0.045] bg-[#F8F8F8] px-3 py-5 sm:my-5 sm:px-4"
+                      >
+                        {component.name === 'BookingCard' ? (
+                          <BookingCard className="w-full" />
+                        ) : component.name === 'CourseCard' ? (
+                          <CourseCard className="mx-auto" />
+                        ) : component.name === 'AuthCard' ? (
+                          <AuthCard
+                            logo={
+                              <Image
+                                src="/fab.svg"
+                                alt="NovaMotion logo"
+                                width={48}
+                                height={48}
+                              />
+                            }
+                          />
+                        ) : component.category === 'Cards' ? (
                           <CardPreview componentName={component.name} />
+                        ) : component.name === 'TravelSearch' ? (
+                          <Preview className="w-full max-w-[920px]" />
+                        ) : component.name === 'DeviceFrame' ? (
+                          <Preview device="ios">
+                            <div className="space-y-3 p-4">
+                              <p className="text-[11px] font-semibold text-[#18181B]">
+                                Your screen, your design
+                              </p>
+                              <input
+                                aria-label="Device frame preview content"
+                                defaultValue="Edit this screen"
+                                className="w-full rounded-lg border border-[#E4E4E7] px-2 py-2 text-[10px] text-[#18181B]"
+                              />
+                              <div className="h-20 rounded-xl bg-[#F4F4F5]" />
+                            </div>
+                          </Preview>
                         ) : (
                           <Preview>
                             {component.category === 'Buttons' ? 'Try it' : undefined}
@@ -459,298 +573,66 @@ export default function Components() {
                         )}
                       </div>
 
-                      <div>
-                        <h3 className="text-[14px] font-semibold text-[#18181B]">
-                          {component.name}
-                        </h3>
-                        <p className="mt-1 text-[12px] text-[#71717A]">
-                          {component.description}
-                        </p>
+                      <div className="flex items-end justify-between gap-3">
+                        <div className="min-w-0">
+                          <h3 className="truncate text-[14px] font-semibold tracking-tight text-[#18181B]">
+                            {component.name}
+                          </h3>
+                          <p className="mt-1 line-clamp-2 text-[11px] leading-relaxed text-[#71717A]">
+                            {component.description}
+                          </p>
+                        </div>
+                        <div className="flex shrink-0 items-center gap-1.5">
+                        <button
+                          type="button"
+                          aria-label={`Restart ${component.name} preview`}
+                          title="Restart preview"
+                          onClick={() =>
+                            setPreviewRevisions((current) => ({
+                              ...current,
+                              [component.slug]: (current[component.slug] ?? 0) + 1,
+                            }))
+                          }
+                          className="grid size-9 place-items-center rounded-xl border border-black/[0.07] bg-white text-[#52525B] transition-colors hover:bg-[#F4F4F5] hover:text-[#18181B] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#18181B]"
+                        >
+                          <svg
+                            aria-hidden="true"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.8"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M3 12a9 9 0 1 0 2.64-6.36L3 8" />
+                            <path d="M3 3v5h5" />
+                          </svg>
+                        </button>
                         <Link
                           href={`/components/${component.slug}`}
-                          className="mt-3 inline-flex text-[12px] font-semibold text-[#52525B] transition-colors hover:text-[#18181B]"
+                          aria-label={`View ${component.name} details`}
+                          title="View details"
+                          className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#18181B] px-3 text-[11px] font-semibold text-white transition-all hover:bg-[#3F3F46] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#18181B]"
                         >
-                          View details <span aria-hidden="true" className="ml-1">→</span>
+                          Explore
+                          <span aria-hidden="true">↗</span>
                         </Link>
+                        </div>
                       </div>
-                    </article>
+                      </GsapInteractive>
+                    </motion.div>
                   );
                 })
               ) : (
-                <p className="col-span-full rounded-2xl bg-[#F6F6F6] px-5 py-10 text-center text-[13px] text-[#71717A]">
+                <p className="col-span-full rounded-2xl border border-black/[0.06] bg-white px-5 py-14 text-center text-[13px] text-[#71717A]">
                   No components match “{searchQuery}”.
                 </p>
               )
-            ) : (
-              <>
-            {/* CARD 1: Gallery / Poppies Carousel */}
-            <div className="bg-[#F6F6F6] rounded-[24px] p-5 flex flex-col justify-between min-h-[470px] border border-black/[0.03]">
-              {/* Top Pill */}
-              <div>
-                <span className="inline-block bg-white text-[#52525B] text-[11.5px] font-medium px-2.5 py-1 rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-                  New
-                </span>
-              </div>
-
-              {/* DuoFlip gallery */}
-              <div className="my-auto py-6">
-                <DuoFlip
-                  images={DUO_FLIP_IMAGES}
-                  aspect={1.6}
-                  radius={18}
-                  interval={3.4}
-                  className="mx-auto w-full max-w-[500px]"
-                />
-              </div>
-
-              <Link
-                href="/components/duo-flip"
-                className="self-end text-[12px] font-semibold text-[#52525B] transition-colors hover:text-[#18181B]"
-              >
-                View details <span aria-hidden="true" className="ml-1">→</span>
-              </Link>
-            </div>
-
-            {/* CARD 2: Designer Profile Card (Lena Hartmann) */}
-            <div className="bg-[#F6F6F6] rounded-[24px] p-5 flex flex-col justify-between min-h-[470px] border border-black/[0.03]">
-              {/* Top Pill */}
-              <div className="mb-4">
-                <span className="inline-block bg-white text-[#52525B] text-[11.5px] font-medium px-2.5 py-1 rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-                  New
-                </span>
-              </div>
-
-              {/* Inner White Profile Card */}
-              <div className="bg-white rounded-[22px] p-3 shadow-[0_4px_20px_rgba(0,0,0,0.04)] border border-black/[0.04] mx-auto w-full max-w-[310px]">
-                {/* Pastel Gradient Banner */}
-                <div className="h-24 rounded-[16px] bg-gradient-to-r from-[#F9D8C9] via-[#E3D5FA] to-[#CBE8F8] relative p-2.5 flex justify-end items-start">
-                  <span className="inline-flex items-center gap-1.5 bg-white/90 backdrop-blur-xs text-[#18181B] text-[11px] font-medium px-2.5 py-1 rounded-full shadow-2xs">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                    Available
-                  </span>
-                </div>
-
-                {/* Overlapping Avatar */}
-                <div className="px-2.5 -mt-9 mb-2.5 relative z-10">
-                  <img
-                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80"
-                    alt="Lena Hartmann"
-                    className="w-16 h-16 rounded-full object-cover border-[3px] border-white shadow-sm"
-                  />
-                </div>
-
-                {/* Name & Location */}
-                <div className="px-2.5">
-                  <div className="flex items-center gap-1.5">
-                    <h3 className="text-[16px] font-bold text-[#18181B] tracking-tight">
-                      Lena Hartmann
-                    </h3>
-                    {/* Blue Verified Badge */}
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="#2563EB">
-                      <path d="M12 2L14.8 4.2L18.4 4L19.6 7.4L22.5 9.5L21.4 13L22.5 16.5L19.6 18.6L18.4 22L14.8 21.8L12 24L9.2 21.8L5.6 22L4.4 18.6L1.5 16.5L2.6 13L1.5 9.5L4.4 7.4L5.6 4L9.2 4.2L12 2Z" />
-                      <path
-                        d="M9 12.2L11 14.2L15.2 10"
-                        stroke="white"
-                        strokeWidth="2.2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        fill="none"
-                      />
-                    </svg>
-                  </div>
-                  <p className="text-[11.5px] text-[#71717A] mt-0.5">
-                    Brand and motion designer · Lisbon
-                  </p>
-
-                  {/* Bio */}
-                  <p className="text-[12px] leading-[1.5] text-[#52525B] mt-3">
-                    I shape identities that move: logos with a heartbeat and
-                    interfaces with a little joy in every tap.
-                  </p>
-
-                  {/* Skill Tags */}
-                  <div className="flex flex-wrap items-center gap-1.5 mt-3.5">
-                    {['Motion', 'Branding', '3D', '+3'].map((tag) => (
-                      <span
-                        key={tag}
-                        className="px-2.5 py-0.5 rounded-full bg-[#F4F4F5] text-[#52525B] text-[11px] font-medium"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* Stats Box */}
-                  <div className="grid grid-cols-3 bg-[#FAFAFA] border border-[#F4F4F5] rounded-2xl py-2.5 px-2 mt-4 text-center">
-                    <div>
-                      <div className="text-[13.5px] font-bold text-[#18181B]">
-                        12,480
-                      </div>
-                      <div className="text-[10.5px] text-[#71717A]">
-                        Followers
-                      </div>
-                    </div>
-                    <div className="border-x border-[#E4E4E7]">
-                      <div className="text-[13.5px] font-bold text-[#18181B]">
-                        86
-                      </div>
-                      <div className="text-[10.5px] text-[#71717A]">
-                        Projects
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-[13.5px] font-bold text-[#18181B]">
-                        4.9
-                      </div>
-                      <div className="text-[10.5px] text-[#71717A]">Rating</div>
-                    </div>
-                  </div>
-
-                  {/* Bottom Actions */}
-                  <div className="flex items-center gap-2 mt-3.5 pb-1">
-                    <button
-                      type="button"
-                      onClick={() => setIsFollowing(!isFollowing)}
-                      className={`flex-1 py-2.5 px-4 rounded-full text-[12.5px] font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer ${
-                        isFollowing
-                          ? 'bg-[#F4F4F5] text-[#18181B]'
-                          : 'bg-[#18181B] text-white hover:bg-[#27272A]'
-                      }`}
-                    >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                        <circle cx="9" cy="7" r="4" />
-                        <line x1="19" y1="8" x2="19" y2="14" />
-                        <line x1="22" y1="11" x2="16" y2="11" />
-                      </svg>
-                      {isFollowing ? 'Following' : 'Follow'}
-                    </button>
-
-                    <button
-                      type="button"
-                      aria-label="Message"
-                      className="w-9 h-9 rounded-full border border-[#E4E4E7] hover:bg-[#F4F4F5] flex items-center justify-center text-[#18181B] transition-colors cursor-pointer"
-                    >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                      </svg>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setIsBookmarked(!isBookmarked)}
-                      aria-label="Bookmark"
-                      className="w-9 h-9 rounded-full border border-[#E4E4E7] hover:bg-[#F4F4F5] flex items-center justify-center text-[#18181B] transition-colors cursor-pointer"
-                    >
-                      <svg
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill={isBookmarked ? '#18181B' : 'none'}
-                        stroke="currentColor"
-                        strokeWidth="1.9"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* CARD 3: Coming Up Bills Card */}
-            <div className="bg-[#F6F6F6] rounded-[24px] p-5 flex flex-col justify-between min-h-[470px] border border-black/[0.03]">
-              {/* Top Pill */}
-              <div className="mb-4">
-                <span className="inline-block bg-white text-[#52525B] text-[11.5px] font-medium px-2.5 py-1 rounded-full shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
-                  Updated
-                </span>
-              </div>
-
-              {/* Inner White Bills Card */}
-              <div className="bg-white rounded-[22px] p-5 shadow-[0_4px_20px_rgba(0,0,0,0.04)] border border-black/[0.04] mx-auto w-full max-w-[330px] my-auto">
-                {/* Card Header */}
-                <div className="flex items-start justify-between mb-5">
-                  <div>
-                    <h3 className="text-[15px] font-bold text-[#18181B]">
-                      Coming up
-                    </h3>
-                    <p className="text-[12px] text-[#71717A] mt-0.5">
-                      <span className="font-semibold text-[#18181B]">
-                        $212.48
-                      </span>{' '}
-                      still to pay
-                    </p>
-                  </div>
-
-                  {/* Filter Dropdown Button */}
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setBillFilter((prev) =>
-                        prev === 'All' ? 'Autopay' : 'All'
-                      )
-                    }
-                    className="inline-flex items-center gap-1 bg-[#F4F4F5] hover:bg-[#E4E4E7] text-[#18181B] text-[12px] font-medium px-3 py-1 rounded-full transition-colors cursor-pointer"
-                  >
-                    {billFilter}
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="m6 9 6 6 6-6" />
-                    </svg>
-                  </button>
-                </div>
-
-                {/* Bill Rows */}
-                <div className="divide-y divide-[#F4F4F5]">
-                  {filteredBills.map((bill) => (
-                    <div
-                      key={bill.id}
-                      className="py-3 first:pt-0 last:pb-0 flex items-center justify-between gap-3"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-[#F4F4F5] flex items-center justify-center text-[#52525B] shrink-0">
-                          {renderBillIcon(bill.icon)}
-                        </div>
-                        <div>
-                          <div className="text-[13px] font-semibold text-[#18181B]">
-                            {bill.title}
-                          </div>
-                          <div className="flex items-center gap-1.5 mt-0.5">
-                            {bill.isUrgent ? (
-                              <span className="inline-flex items-center gap-1 bg-[#FEF3C7] text-[#B45309] text-[10.5px] font-medium px-2 py-0.5 rounded-full">
-                                <span className="w-1.5 h-1.5 rounded-full bg-[#F59E0B]" />
-                                {bill.due}
-                              </span>
-                            ) : (
-                              <span className="text-[11px] text-[#A1A1AA]">
-                                {bill.due}
-                              </span>
-                            )}
-
-                            {bill.autopay && (
-                              <span className="bg-[#F4F4F5] text-[#71717A] text-[10px] font-medium px-1.5 py-0.5 rounded-md">
-                                Autopay
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="bg-[#F4F4F5] text-[#18181B] text-[12px] font-semibold px-2.5 py-1 rounded-lg">
-                        {bill.amount}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="h-2" />
-            </div>
-              </>
-            )}
+            ) : null}
           </div>
+        </div>
         </div>
       </div>
     </section>

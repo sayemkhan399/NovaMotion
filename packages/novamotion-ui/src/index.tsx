@@ -11,8 +11,26 @@ export { DuoFlip } from "./DuoFlip.js";
 export type { DuoFlipImage, DuoFlipProps } from "./DuoFlip.js";
 export { MasonryGallery, ThumbnailCarousel } from "./Galleries.js";
 export type { GalleryImagesProps } from "./Galleries.js";
+export { CourseCard } from "./CourseCard.js";
+export type { CourseCardProps } from "./CourseCard.js";
 export { TabBar } from "./TabBar.js";
 export type { TabBarProps, TabBarVariant, TabIcon, TabItem } from "./TabBar.js";
+export { AuthCard } from "./AuthCard.js";
+export type { AuthCardProps, AuthDetails, AuthMode, AuthProvider } from "./AuthCard.js";
+export { Social } from "./Social.js";
+export type { SocialProps } from "./Social.js";
+export type { SocialProvider } from "./SocialProviderIcon.js";
+export { BookingCard } from "./BookingCard.js";
+export type { BookingCardProps, BookingSlot } from "./BookingCard.js";
+export { GsapInteractive } from "./GsapInteractive.js";
+export { MonthCalendar } from "./MonthCalendar.js";
+export type { MonthCalendarProps } from "./MonthCalendar.js";
+export { DeviceFrame } from "./DeviceFrame.js";
+export type { DeviceFrameKind, DeviceFrameProps } from "./DeviceFrame.js";
+export { BarChart, DonutChart, LineChart } from "./Charts.js";
+export type { ChartPoint, ChartProps } from "./Charts.js";
+export { RatingInput, Toast } from "./Feedback.js";
+export type { RatingInputProps, ToastProps } from "./Feedback.js";
 
 export type MotionButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
