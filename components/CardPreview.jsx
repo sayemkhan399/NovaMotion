@@ -5,6 +5,7 @@ import {
   FlipCard,
   GradientCard,
   GlassCard,
+  ProUpgradeCard,
   SpotlightCard,
   TiltCard,
 } from 'novamotion-ui';
@@ -60,6 +61,16 @@ export default function CardPreview({ componentName, onAction }) {
     setActionLabel(message);
     onAction?.(message);
   };
+
+  if (componentName === 'ProUpgradeCard') {
+    return (
+      <ProUpgradeCard
+        className="!max-w-none"
+        onUpgrade={() => notify('Upgrade selected.')}
+        onCompare={() => notify('Plan comparison selected.')}
+      />
+    );
+  }
 
   if (componentName === 'SpotlightCard') {
     return (

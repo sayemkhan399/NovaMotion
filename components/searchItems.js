@@ -17,6 +17,8 @@ export const COMPONENT_SLUGS = [
   'gradient-card',
   'course-card',
   'booking-card',
+  'pro-upgrade-card',
+  'bento-demo',
   'auth-card',
   'typewriter-text',
   'text-reveal',
@@ -60,18 +62,20 @@ export const COMPONENT_SLUGS = [
   'donut-chart',
   'rating-input',
   'toast',
+  'toast-stack',
   'scroll-reveal',
   'scroll-parallax',
   'sticky-scroll',
 ];
 
 const categoryForSlug = (slug) => {
+  if (slug === 'bento-demo') return 'Layouts';
   if (slug === 'travel-search' || slug === 'search-bar' || slug === 'autocomplete-search') return 'Search';
   if (slug === 'device-frame') return 'Frames';
   if (slug === 'auth-card') return 'Forms';
   if (slug === 'month-calendar' || slug === 'date-range-calendar') return 'Calendar';
   if (slug.endsWith('-chart')) return 'Charts';
-  if (slug === 'rating-input' || slug === 'toast') return 'Feedback';
+  if (slug === 'rating-input' || slug === 'toast' || slug === 'toast-stack') return 'Feedback';
   if (slug === 'social') return 'Buttons';
   if (slug.endsWith('-button')) return 'Buttons';
   if (slug.endsWith('-card')) return 'Cards';

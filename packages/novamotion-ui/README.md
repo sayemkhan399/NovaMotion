@@ -38,10 +38,11 @@ Available buttons: `AnimatedButton`, `MagneticButton`, `GradientButton`, `GlowBu
 `Social` renders Google, GitHub, and Apple sign-in buttons. Use `onProviderClick` to connect your provider flow; rejected promises are displayed as errors.
 
 Available cards: `SpotlightCard`, `TiltCard`, `GlassCard`, `FlipCard`, `GradientCard`, `CourseCard`, and `BookingCard`.
+Layouts: `BentoDemo` is a responsive animated feature grid; compose your own with `BentoGrid` and `BentoCard`. Each BentoCard icon animates its SVG stroke with GSAP DrawSVG on hover and keyboard focus.
 `CourseCard` is a responsive course tile with customizable badge, lesson count, title, description, click handler, and root `className`.
 `BookingCard` lets users choose an available date and time, then calls `onBook` with `{ date, time }`. Rejected promises are displayed as booking errors. Use `onAddToCalendar` to connect the confirmation action to your calendar flow.
 `GsapInteractive` adds GSAP-powered hover, press, and keyboard-focus feedback to a wrapper and respects the user's reduced-motion preference.
-Buttons accept standard button attributes. Cards accept standard div attributes; `FlipCard` accepts `children` and an optional `backFace`.
+Buttons accept standard button attributes. Cards accept standard div attributes; `FlipCard` accepts `children` and an optional `backFace`. `ProUpgradeCard` provides a customizable badge, title, description, feature list, and upgrade/compare callbacks.
 
 Text: `TypewriterText`, `TextReveal`, `GradientText`, `SplitText`, `ScrambleText`.
 Backgrounds: `AuroraBackground`, `ParticleBackground`, `GridBackground`, `SpotlightBackground`, `MeteorsBackground`.
@@ -56,7 +57,7 @@ Search: `SearchBar` and `AutocompleteSearch`.
 `SearchBar` supports controlled or default input values, clear and submit actions, and an `onSearch` callback. `AutocompleteSearch` filters typed options and supports keyboard navigation and `onSelect`.
 Forms: `AuthCard`, `FloatingInput`, `AnimatedInput`, `ToggleSwitch`, `OTPInput`.
 Charts: `BarChart`, `LineChart`, and `DonutChart` accept optional `{ label, value }` data points and a title.
-Feedback: `RatingInput` supports controlled or default ratings; `Toast` provides animated, dismissible success, info, warning, error, and loading styles, and can be reopened after dismissal.
+Feedback: `RatingInput` supports controlled or default ratings; `Toast` provides animated, dismissible success, info, warning, error, and loading styles, and can be reopened after dismissal. `ToastStack` adds a draggable, expandable notification stack with optional timers, actions, sample triggers, and an imperative `push`/`dismiss`/`clear` ref API.
 Frames: `DeviceFrame` renders custom children inside iOS, Android, or watch device frames. Pass your app screen as `children` and select the frame with the `device` prop.
 Scroll: `ScrollReveal`, `ScrollParallax`, `StickyScroll`.
 Gallery: `DuoFlip`, `MasonryGallery`, `ThumbnailCarousel`.

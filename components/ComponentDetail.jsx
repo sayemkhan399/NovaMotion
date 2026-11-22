@@ -12,6 +12,7 @@ import {
   AnimatedButton,
   AuroraBackground,
   BarChart,
+  BentoDemo,
   BookingCard,
   BubbleNavigation,
   CanvasShadowLoader,
@@ -49,6 +50,7 @@ import {
   ParallaxImage,
   ParticleBackground,
   ProgressBar,
+  ProUpgradeCard,
   RatingInput,
   RippleButton,
   SearchBar,
@@ -67,6 +69,7 @@ import {
   ThumbnailCarousel,
   TextReveal,
   Toast,
+  ToastStack,
   ToggleSwitch,
   TypewriterText,
   TiltCard,
@@ -228,6 +231,38 @@ const CUSTOMIZATION_GUIDES = {
       ['The title and description className values', 'Typography, spacing, and text colors.'],
     ],
     source: 'packages/novamotion-ui/src/CourseCard.tsx',
+  },
+  ProUpgradeCard: {
+    attributes: [
+      ['badge', 'Recommendation label shown above the title; use an empty string to hide it.'],
+      ['title / description', 'Main heading and supporting card copy.'],
+      ['features', 'Readonly list of benefit strings.'],
+      ['upgradeLabel / compareLabel', 'Text for the two action buttons.'],
+      ['onUpgrade / onCompare', 'Callbacks for the primary and secondary actions.'],
+      ['className', 'Additional Tailwind classes for the card width and layout.'],
+    ],
+    source: 'packages/novamotion-ui/src/ProUpgradeCard.tsx',
+  },
+  ToastStack: {
+    attributes: [
+      ['initial', 'Optional notifications shown at first render; initial notifications remain until dismissed by default.'],
+      ['duration', 'Default lifetime in milliseconds for notifications added with push; use 0 to disable the timer.'],
+      ['visible', 'Number of notifications visible while the stack is folded.'],
+      ['triggers', 'Show or hide the sample notification buttons.'],
+      ['onDismiss', 'Called with the dismissed notification, including its id.'],
+      ['ref.push / ref.dismiss / ref.clear', 'Imperative methods for adding, dismissing, and clearing notifications.'],
+      ['className', 'Additional Tailwind classes for the stack wrapper.'],
+    ],
+    source: 'packages/novamotion-ui/src/ToastStack.tsx',
+  },
+  BentoDemo: {
+    attributes: [
+      ['BentoDemo', 'Ready-to-use animated showcase of file, notification, integration, and calendar cards.'],
+      ['BentoGrid', 'Composable responsive three-column layout for BentoCard items.'],
+      ['BentoCard', 'Card primitive with an icon, heading, description, body content, and hover-drawn icon animation.'],
+      ['className', 'Additional Tailwind classes for the demo grid.'],
+    ],
+    source: 'packages/novamotion-ui/src/BentoGrid.tsx',
   },
   DynamicIsland: {
     attributes: [
@@ -502,6 +537,18 @@ const COMPONENTS = {
     description: 'An animated booking flow for selecting an available date and time, with an async callback for submitting reservations.',
     Component: BookingCard,
     type: 'card',
+  },
+  'pro-upgrade-card': {
+    name: 'ProUpgradeCard',
+    description: 'A premium upgrade card with animated feature highlights, a recommendation badge, and primary and secondary actions.',
+    Component: ProUpgradeCard,
+    type: 'card',
+  },
+  'bento-demo': {
+    name: 'BentoDemo',
+    description: 'A responsive feature grid with animated files, notifications, integrations, and an interactive calendar.',
+    Component: BentoDemo,
+    type: 'layout',
   },
   'typewriter-text': {
     name: 'TypewriterText',
@@ -781,6 +828,12 @@ const COMPONENTS = {
     Component: Toast,
     type: 'feedback',
   },
+  'toast-stack': {
+    name: 'ToastStack',
+    description: 'A draggable, expandable notification stack with optional timers, actions, and imperative controls.',
+    Component: ToastStack,
+    type: 'feedback',
+  },
   'scroll-reveal': {
     name: 'ScrollReveal',
     description: 'Content fades and slides into view when scrolled into the viewport.',
@@ -822,6 +875,70 @@ function getUsageCode(componentName, language, type, previewStyle = 'pill') {
     ScrollReveal: 'This section appears as you scroll.',
     ScrollParallax: 'Scroll to move this layer.',
   };
+
+  if (componentName === 'BentoDemo') {
+    return `import { BentoDemo } from "novamotion-ui";
+
+export default function Example() {
+  return <BentoDemo />;
+}`;
+  }
+
+  if (componentName === 'ToastStack') {
+    return language === 'TSX'
+      ? `'use client';
+
+import { useRef } from "react";
+import { ToastStack, type ToastStackHandle } from "novamotion-ui";
+
+export default function Example() {
+  const toastStack = useRef<ToastStackHandle>(null);
+
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={() =>
+          toastStack.current?.push({
+            kind: "success",
+            title: "Changes saved",
+            description: "Your work is up to date.",
+          })
+        }
+      >
+        Show toast
+      </button>
+      <ToastStack ref={toastStack} />
+    </div>
+  );
+}`
+      : `'use client';
+
+import { useRef } from "react";
+import { ToastStack } from "novamotion-ui";
+
+export default function Example() {
+  const toastStack = useRef(null);
+
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={() =>
+          toastStack.current?.push({
+            kind: "success",
+            title: "Changes saved",
+            description: "Your work is up to date.",
+          })
+        }
+      >
+        Show toast
+      </button>
+      <ToastStack ref={toastStack} />
+    </div>
+  );
+}`;
+  }
 
   if (componentName === 'Social') {
     if (language === 'TSX') {
@@ -996,6 +1113,19 @@ const images = [
 
 export default function Example() {
   return <${componentName} images={images}${galleryProps} />;
+}`;
+  }
+
+  if (componentName === 'ProUpgradeCard') {
+    return `import { ProUpgradeCard } from "novamotion-ui";
+
+export default function Example() {
+  return (
+    <ProUpgradeCard
+      onUpgrade={() => console.log("Upgrade selected")}
+      onCompare={() => console.log("Compare plans")}
+    />
+  );
 }`;
   }
 
@@ -1334,6 +1464,7 @@ export default function ComponentDetail({ slug }) {
     detail.name === 'MonthCalendar'
       ? 'Calendar'
       : {
+            layout: 'Layouts',
             button: 'Buttons',
             card: 'Cards',
             text: 'Text',
@@ -1352,7 +1483,9 @@ export default function ComponentDetail({ slug }) {
             scroll: 'Scroll',
           }[detail.type] ?? 'Components';
   const renderComponent = () =>
-    detail.name === 'TravelSearch' ? (
+    detail.name === 'BentoDemo' ? (
+      <BentoDemo className="w-full" />
+    ) : detail.name === 'TravelSearch' ? (
       <Preview
         className="mx-auto"
         onSearch={(payload) =>
@@ -1415,6 +1548,8 @@ export default function ComponentDetail({ slug }) {
       />
     ) : detail.name === 'Toast' ? (
       <ToastPlayground />
+    ) : detail.name === 'ToastStack' ? (
+      <ToastStack />
     ) : detail.name === 'SidebarNavigation' ? (
       <SidebarToastDemo />
     ) : detail.type === 'card' ? (

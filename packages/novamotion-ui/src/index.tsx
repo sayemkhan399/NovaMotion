@@ -13,6 +13,10 @@ export { MasonryGallery, ThumbnailCarousel } from "./Galleries.js";
 export type { GalleryImagesProps } from "./Galleries.js";
 export { CourseCard } from "./CourseCard.js";
 export type { CourseCardProps } from "./CourseCard.js";
+export { BentoCard, BentoDemo, BentoGrid } from "./BentoGrid.js";
+export type { BentoCardProps, BentoGridProps } from "./BentoGrid.js";
+export { ProUpgradeCard } from "./ProUpgradeCard.js";
+export type { ProUpgradeCardProps } from "./ProUpgradeCard.js";
 export { TabBar } from "./TabBar.js";
 export type { TabBarProps, TabBarVariant, TabIcon, TabItem } from "./TabBar.js";
 export { DynamicIsland } from "./DynamicIsland.js";
@@ -41,6 +45,13 @@ export { BarChart, DonutChart, LineChart } from "./Charts.js";
 export type { ChartPoint, ChartProps } from "./Charts.js";
 export { RatingInput, Toast } from "./Feedback.js";
 export type { RatingInputProps, ToastProps } from "./Feedback.js";
+export { ToastStack } from "./ToastStack.js";
+export type {
+  ToastItem,
+  ToastKind,
+  ToastStackHandle,
+  ToastStackProps,
+} from "./ToastStack.js";
 export { CanvasShadowLoader, SkeletonLoader } from "./Loaders.js";
 export type { CanvasShadowLoaderProps, SkeletonLoaderProps } from "./Loaders.js";
 export { AutocompleteSearch, SearchBar } from "./Search.js";

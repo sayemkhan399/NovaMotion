@@ -11,6 +11,7 @@ import {
   AnimatedButton,
   AuroraBackground,
   BarChart,
+  BentoDemo,
   BookingCard,
   BubbleNavigation,
   CanvasShadowLoader,
@@ -42,6 +43,7 @@ import {
   ParallaxImage,
   ParticleBackground,
   ProgressBar,
+  ProUpgradeCard,
   ScrambleText,
   ScrollParallax,
   ScrollReveal,
@@ -53,6 +55,7 @@ import {
   TabBar,
   TextReveal,
   ToggleSwitch,
+  ToastStack,
   TypewriterText,
   MagneticButton,
   RippleButton,
@@ -68,9 +71,9 @@ import DUO_FLIP_IMAGES from './duoFlipImages';
 import TravelSearch from './TravelSearch';
 
 const CATEGORIES = [
-  { name: 'All', count: 59 },
+  { name: 'All', count: 64 },
   { name: 'Buttons', count: 8 },
-  { name: 'Cards', count: 7 },
+  { name: 'Cards', count: 8 },
   { name: 'Search', count: 3 },
   { name: 'Frames', count: 1 },
   { name: 'Text', count: 5 },
@@ -84,7 +87,12 @@ const CATEGORIES = [
   { name: 'Scroll', count: 3 },
   { name: 'Charts', count: 3 },
   { name: 'Galleries', count: 4 },
-  { name: 'Feedback', count: 2 },
+  { name: 'Feedback', count: 3 },
+  { name: 'Layouts', count: 1 },
+];
+
+const LAYOUT_COMPONENTS = [
+  { slug: 'bento-demo', name: 'BentoDemo', description: 'A responsive feature grid with animated file, notification, integration, and calendar previews.' },
 ];
 
 const BUTTON_COMPONENTS = [
@@ -117,6 +125,7 @@ const CARD_COMPONENTS = [
   { slug: 'gradient-card', name: 'GradientCard', description: 'A vivid gradient edge frames the card.' },
   { slug: 'course-card', name: 'CourseCard', description: 'A responsive course card with a layered wave illustration.' },
   { slug: 'booking-card', name: 'BookingCard', description: 'An animated appointment card for choosing a date and time.' },
+  { slug: 'pro-upgrade-card', name: 'ProUpgradeCard', description: 'A premium upgrade card with feature highlights and dual actions.' },
 ];
 
 const TEXT_COMPONENTS = [
@@ -196,6 +205,7 @@ const CHART_COMPONENTS = [
 const FEEDBACK_COMPONENTS = [
   { slug: 'rating-input', name: 'RatingInput', description: 'Collect an interactive, accessible star rating.' },
   { slug: 'toast', name: 'Toast', description: 'Explore five animated notification styles: success, info, warning, error, and loading.' },
+  { slug: 'toast-stack', name: 'ToastStack', description: 'A draggable animated toast stack with timers, actions, and a compact folded state.' },
 ];
 
 const SCROLL_COMPONENTS = [
@@ -207,6 +217,7 @@ const SCROLL_COMPONENTS = [
 const ALL_COMPONENTS = [
   ...BUTTON_COMPONENTS.map((component) => ({ ...component, category: 'Buttons' })),
   ...CARD_COMPONENTS.map((component) => ({ ...component, category: 'Cards' })),
+  ...LAYOUT_COMPONENTS.map((component) => ({ ...component, category: 'Layouts' })),
   ...TEXT_COMPONENTS.map((component) => ({ ...component, category: 'Text' })),
   ...BACKGROUND_COMPONENTS.map((component) => ({ ...component, category: 'Backgrounds' })),
   ...NAVIGATION_COMPONENTS.map((component) => ({ ...component, category: 'Navigation' })),
@@ -225,7 +236,9 @@ const ALL_COMPONENTS = [
 const COMPONENT_PREVIEWS = {
   ...BUTTON_PREVIEWS,
   ...Object.fromEntries(CARD_COMPONENTS.map((component) => [component.name, null])),
+  BentoDemo,
   BookingCard,
+  ProUpgradeCard,
   TypewriterText,
   TextReveal,
   GradientText,
@@ -269,6 +282,7 @@ const COMPONENT_PREVIEWS = {
   DonutChart,
   RatingInput,
   Toast,
+  ToastStack,
   ScrollReveal,
   ScrollParallax,
   StickyScroll,
@@ -319,6 +333,7 @@ export default function Components() {
     'Frames',
     'Charts',
     'Feedback',
+    'Layouts',
   ].includes(selectedCategory);
   const filteredComponents = ALL_COMPONENTS.filter(
     (component) => {
@@ -533,6 +548,8 @@ export default function Components() {
                       className={`h-full ${
                         component.name === 'TravelSearch'
                           ? 'col-span-full w-full max-w-[960px] justify-self-center'
+                          : component.name === 'BentoDemo'
+                            ? 'col-span-full w-full'
                           : 'w-full'
                       }`}
                     >
@@ -549,10 +566,16 @@ export default function Components() {
 
                       <div
                         key={`${component.slug}-${previewRevisions[component.slug] ?? 0}`}
-                        className="my-4 flex min-h-[230px] flex-1 items-center justify-center overflow-hidden rounded-[17px] border border-black/[0.045] bg-[#F8F8F8] px-3 py-5 sm:my-5 sm:px-4"
+                        className={`my-4 flex min-h-[230px] flex-1 items-center justify-center overflow-hidden rounded-[17px] border border-black/[0.045] bg-[#F8F8F8] px-3 py-5 sm:my-5 sm:px-4 ${
+                          component.name === 'BentoDemo'
+                            ? '!min-h-0 !overflow-visible !rounded-none !border-0 !bg-transparent !px-0 !py-0'
+                            : ''
+                        }`}
                       >
                         {component.name === 'BookingCard' ? (
                           <BookingCard className="w-full" />
+                        ) : component.name === 'BentoDemo' ? (
+                          <BentoDemo className="w-full" />
                         ) : component.name === 'CourseCard' ? (
                           <CourseCard className="mx-auto" />
                         ) : component.name === 'AuthCard' ? (
