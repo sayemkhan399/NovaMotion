@@ -19,9 +19,11 @@ import {
   CursorTrail,
   CourseCard,
   CustomCursor,
+  DateRangeCalendar,
   DeviceFrame,
   DonutChart,
   DockNavigation,
+  DynamicIsland,
   FloatingInput,
   FloatingNavbar,
   GradientButton,
@@ -73,8 +75,8 @@ const CATEGORIES = [
   { name: 'Frames', count: 1 },
   { name: 'Text', count: 5 },
   { name: 'Backgrounds', count: 5 },
-  { name: 'Navigation', count: 5 },
-  { name: 'Calendar', count: 1 },
+  { name: 'Navigation', count: 6 },
+  { name: 'Calendar', count: 2 },
   { name: 'Cursor', count: 3 },
   { name: 'Images', count: 3 },
   { name: 'Loaders', count: 5 },
@@ -137,12 +139,14 @@ const NAVIGATION_COMPONENTS = [
   { slug: 'floating-navbar', name: 'FloatingNavbar', description: 'A floating, selectable navigation bar.' },
   { slug: 'dock-navigation', name: 'DockNavigation', description: 'A compact dock with active-item feedback.' },
   { slug: 'sidebar-navigation', name: 'SidebarNavigation', description: 'A vertical sidebar with active links.' },
+  { slug: 'dynamic-island', name: 'DynamicIsland', description: 'An always-on, animated island for music, calls, and live activities.' },
   { slug: 'bubble-navigation', name: 'BubbleNavigation', description: 'A pill navigation with a moving active state.' },
   { slug: 'tab-bar', name: 'TabBar', description: 'An animated tab bar with pill, labeled, and action styles.' },
 ];
 
 const CALENDAR_COMPONENTS = [
   { slug: 'month-calendar', name: 'MonthCalendar', description: 'An interactive monthly calendar with event markers and keyboard navigation.' },
+  { slug: 'date-range-calendar', name: 'DateRangeCalendar', description: 'An animated check-in and check-out date picker with a live night count.' },
 ];
 
 const CURSOR_COMPONENTS = [
@@ -191,7 +195,7 @@ const CHART_COMPONENTS = [
 
 const FEEDBACK_COMPONENTS = [
   { slug: 'rating-input', name: 'RatingInput', description: 'Collect an interactive, accessible star rating.' },
-  { slug: 'toast', name: 'Toast', description: 'Show a dismissible status message with a clear action.' },
+  { slug: 'toast', name: 'Toast', description: 'Explore five animated notification styles: success, info, warning, error, and loading.' },
 ];
 
 const SCROLL_COMPONENTS = [
@@ -233,9 +237,11 @@ const COMPONENT_PREVIEWS = {
   SpotlightBackground,
   MeteorsBackground,
   MonthCalendar,
+  DateRangeCalendar,
   FloatingNavbar,
   DockNavigation,
   SidebarNavigation,
+  DynamicIsland,
   BubbleNavigation,
   TabBar,
   CustomCursor,

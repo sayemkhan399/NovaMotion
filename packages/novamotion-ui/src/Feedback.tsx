@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AlertCircle, Check, Info, LoaderCircle, TriangleAlert, X } from "lucide-react";
 
 export type RatingInputProps = {
   value?: number;
@@ -75,74 +77,112 @@ export function RatingInput({
 export type ToastProps = {
   title?: string;
   description?: string;
+  variant?: "success" | "info" | "warning" | "error" | "loading";
   className?: string;
 };
 
 export function Toast({
   title = "Changes saved",
   description = "Your project is up to date.",
+  variant = "success",
   className = "",
 }: ToastProps) {
   const [isVisible, setIsVisible] = useState(true);
+  const shouldReduceMotion = useReducedMotion();
+  const variants = {
+    success: {
+      Icon: Check,
+      iconStyle: "bg-emerald-50 text-emerald-700",
+      accent: "border-l-emerald-500",
+      role: "status" as const,
+    },
+    info: {
+      Icon: Info,
+      iconStyle: "bg-sky-50 text-sky-700",
+      accent: "border-l-sky-500",
+      role: "status" as const,
+    },
+    warning: {
+      Icon: TriangleAlert,
+      iconStyle: "bg-amber-50 text-amber-700",
+      accent: "border-l-amber-500",
+      role: "status" as const,
+    },
+    error: {
+      Icon: AlertCircle,
+      iconStyle: "bg-rose-50 text-rose-700",
+      accent: "border-l-rose-500",
+      role: "alert" as const,
+    },
+    loading: {
+      Icon: LoaderCircle,
+      iconStyle: "bg-violet-50 text-violet-700",
+      accent: "border-l-violet-500",
+      role: "status" as const,
+    },
+  };
+  const style = variants[variant];
+  const Icon = style.Icon;
+  const animation = shouldReduceMotion
+    ? { initial: false, animate: { opacity: 1 }, exit: { opacity: 0 } }
+    : {
+        initial: { opacity: 0, y: 12, scale: 0.97 },
+        animate: { opacity: 1, y: 0, scale: 1 },
+        exit: { opacity: 0, y: 8, scale: 0.97 },
+      };
 
   return (
     <div className={`w-full max-w-[380px] ${className}`}>
-      {isVisible ? (
-        <div
-          role="status"
-          aria-live="polite"
-          className="flex items-start gap-3 rounded-2xl border border-black/[0.06] bg-white p-4 shadow-[0_12px_30px_rgba(0,0,0,0.1)]"
-        >
-          <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-[#FFF9CC] text-[#746500]">
-            <svg
-              aria-hidden="true"
-              width="17"
-              height="17"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="m5 12 4 4L19 6" />
-            </svg>
-          </span>
-          <div className="min-w-0 flex-1">
-            <p className="text-[13px] font-semibold text-[#18181B]">{title}</p>
-            <p className="mt-1 text-[11px] leading-relaxed text-[#71717A]">
-              {description}
-            </p>
-          </div>
-          <button
-            type="button"
-            aria-label="Dismiss notification"
-            onClick={() => setIsVisible(false)}
-            className="grid size-7 shrink-0 place-items-center rounded-lg text-[#A1A1AA] transition-colors hover:bg-[#F4F4F5] hover:text-[#18181B]"
+      <AnimatePresence mode="wait" initial={false}>
+        {isVisible ? (
+          <motion.div
+            key="toast"
+            {...animation}
+            transition={shouldReduceMotion ? { duration: 0.12 } : { type: "spring", stiffness: 420, damping: 30 }}
+            role={style.role}
+            aria-live={style.role === "alert" ? "assertive" : "polite"}
+            className={`flex items-start gap-3 rounded-2xl border border-black/[0.06] border-l-[3px] ${style.accent} bg-white p-4 shadow-[0_12px_30px_rgba(0,0,0,0.1)]`}
           >
-            <svg
-              aria-hidden="true"
-              width="14"
-              height="14"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
+            <span className={`grid size-9 shrink-0 place-items-center rounded-xl ${style.iconStyle}`}>
+              <Icon
+                aria-hidden="true"
+                size={17}
+                strokeWidth={variant === "loading" ? 2 : 2.2}
+                className={
+                  variant === "loading" && !shouldReduceMotion
+                    ? "animate-spin"
+                    : ""
+                }
+              />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-[13px] font-semibold text-[#18181B]">{title}</p>
+              <p className="mt-1 text-[11px] leading-relaxed text-[#71717A]">
+                {description}
+              </p>
+            </div>
+            <button
+              type="button"
+              aria-label="Dismiss notification"
+              onClick={() => setIsVisible(false)}
+              className="grid size-7 shrink-0 place-items-center rounded-lg text-[#A1A1AA] transition-colors hover:bg-[#F4F4F5] hover:text-[#18181B]"
             >
-              <path d="m18 6-12 12M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-      ) : (
-        <button
-          type="button"
-          onClick={() => setIsVisible(true)}
-          className="rounded-full bg-[#18181B] px-4 py-2.5 text-[11px] font-semibold text-white transition-colors hover:bg-[#3F3F46]"
-        >
-          Show notification
-        </button>
-      )}
+              <X aria-hidden="true" size={14} />
+            </button>
+          </motion.div>
+        ) : (
+          <motion.button
+            key="reopen"
+            {...animation}
+            transition={shouldReduceMotion ? { duration: 0.12 } : { type: "spring", stiffness: 420, damping: 30 }}
+            type="button"
+            onClick={() => setIsVisible(true)}
+            className="rounded-full bg-[#18181B] px-4 py-2.5 text-[11px] font-semibold text-white transition-colors hover:bg-[#3F3F46]"
+          >
+            Show notification
+          </motion.button>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

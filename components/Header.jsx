@@ -4,16 +4,30 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Blocks, Home, Moon, Network, Sun } from 'lucide-react';
+import {
+  AlertCircle,
+  Blocks,
+  Check,
+  Home,
+  Info,
+  Moon,
+  Network,
+  Sun,
+  X,
+} from 'lucide-react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import NovaMotionMascot from './NovaMotionMascot';
+import { DYNAMIC_ISLAND_EVENT } from './dynamicIslandEvents';
 import { SEARCH_ITEMS } from './searchItems';
 
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
+  const shouldReduceMotion = useReducedMotion();
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSearchResult, setActiveSearchResult] = useState(0);
+  const [islandNotice, setIslandNotice] = useState(null);
 
   const navItems = [
     { label: 'About', href: '/', Icon: Home },
@@ -42,6 +56,38 @@ export default function Header() {
     const savedTheme = window.localStorage.getItem('novamotion-theme');
     const initialTheme = savedTheme === 'dark' ? 'dark' : 'light';
     document.documentElement.dataset.theme = initialTheme;
+  }, []);
+
+  useEffect(() => {
+    let dismissTimer;
+    let noticeId = 0;
+
+    const showNotice = (detail = {}) => {
+      window.clearTimeout(dismissTimer);
+      const variant = ['success', 'error'].includes(detail.variant)
+        ? detail.variant
+        : 'info';
+
+      setIslandNotice({
+        id: ++noticeId,
+        title: typeof detail.title === 'string' ? detail.title : 'Action selected',
+        description:
+          typeof detail.description === 'string'
+            ? detail.description
+            : 'Your action was received.',
+        variant,
+      });
+      dismissTimer = window.setTimeout(() => setIslandNotice(null), 4200);
+    };
+
+    const handleIslandEvent = (event) => showNotice(event.detail);
+
+    window.addEventListener(DYNAMIC_ISLAND_EVENT, handleIslandEvent);
+
+    return () => {
+      window.clearTimeout(dismissTimer);
+      window.removeEventListener(DYNAMIC_ISLAND_EVENT, handleIslandEvent);
+    };
   }, []);
 
   useEffect(() => {
@@ -408,6 +454,75 @@ export default function Header() {
           </section>
         </div>
       )}
+
+      <div
+        aria-live="polite"
+        className="pointer-events-none fixed inset-x-0 top-3 z-[120] flex justify-center px-4"
+      >
+        <AnimatePresence initial={false}>
+          {islandNotice && (
+            <motion.div
+              key={islandNotice.id}
+              initial={
+                shouldReduceMotion
+                  ? { opacity: 0 }
+                  : { opacity: 0, y: -18, scale: 0.94, filter: 'blur(8px)' }
+              }
+              animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
+              exit={
+                shouldReduceMotion
+                  ? { opacity: 0 }
+                  : { opacity: 0, y: -10, scale: 0.96, filter: 'blur(5px)' }
+              }
+              transition={
+                shouldReduceMotion
+                  ? { duration: 0.15 }
+                  : { type: 'spring', stiffness: 420, damping: 30 }
+              }
+              role={islandNotice.variant === 'error' ? 'alert' : 'status'}
+              aria-live={islandNotice.variant === 'error' ? 'assertive' : 'polite'}
+              className="pointer-events-auto w-full max-w-[390px]"
+            >
+              <div className="flex items-center gap-3 rounded-full border border-white/[0.12] bg-[#08080A]/95 px-3 py-2.5 text-white shadow-[0_16px_50px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:px-4">
+                <span
+                  className={`grid size-8 shrink-0 place-items-center rounded-full ${
+                    islandNotice.variant === 'success'
+                      ? 'bg-emerald-400/15 text-emerald-300'
+                      : islandNotice.variant === 'error'
+                        ? 'bg-rose-400/15 text-rose-300'
+                        : 'bg-sky-400/15 text-sky-300'
+                  }`}
+                >
+                  {islandNotice.variant === 'success' ? (
+                    <Check aria-hidden="true" size={16} />
+                  ) : islandNotice.variant === 'error' ? (
+                    <AlertCircle aria-hidden="true" size={16} />
+                  ) : (
+                    <Info aria-hidden="true" size={16} />
+                  )}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-[12px] font-semibold">
+                    {islandNotice.title}
+                  </span>
+                  <span className="mt-0.5 block truncate text-[10px] text-white/55">
+                    {islandNotice.description}
+                  </span>
+                </span>
+                <button
+                  type="button"
+                  aria-label="Dismiss island notification"
+                  data-island-skip
+                  onClick={() => setIslandNotice(null)}
+                  className="grid size-7 shrink-0 place-items-center rounded-full text-white/45 transition-colors hover:bg-white/10 hover:text-white"
+                >
+                  <X aria-hidden="true" size={14} />
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </header>
   );
 }

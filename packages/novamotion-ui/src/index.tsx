@@ -15,6 +15,11 @@ export { CourseCard } from "./CourseCard.js";
 export type { CourseCardProps } from "./CourseCard.js";
 export { TabBar } from "./TabBar.js";
 export type { TabBarProps, TabBarVariant, TabIcon, TabItem } from "./TabBar.js";
+export { DynamicIsland } from "./DynamicIsland.js";
+export type {
+  DynamicIslandActivity,
+  DynamicIslandProps,
+} from "./DynamicIsland.js";
 export { AuthCard } from "./AuthCard.js";
 export type { AuthCardProps, AuthDetails, AuthMode, AuthProvider } from "./AuthCard.js";
 export { Social } from "./Social.js";
@@ -25,6 +30,11 @@ export type { BookingCardProps, BookingSlot } from "./BookingCard.js";
 export { GsapInteractive } from "./GsapInteractive.js";
 export { MonthCalendar } from "./MonthCalendar.js";
 export type { MonthCalendarProps } from "./MonthCalendar.js";
+export { DateRangeCalendar } from "./DateRangeCalendar.js";
+export type {
+  DateRangeCalendarProps,
+  StayDateRange,
+} from "./DateRangeCalendar.js";
 export { DeviceFrame } from "./DeviceFrame.js";
 export type { DeviceFrameKind, DeviceFrameProps } from "./DeviceFrame.js";
 export { BarChart, DonutChart, LineChart } from "./Charts.js";

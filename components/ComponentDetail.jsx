@@ -20,9 +20,11 @@ import {
   CursorTrail,
   CourseCard,
   CustomCursor,
+  DateRangeCalendar,
   DeviceFrame,
   DonutChart,
   DockNavigation,
+  DynamicIsland,
   DuoFlip,
   FloatingInput,
   FloatingNavbar,
@@ -72,6 +74,8 @@ import {
 import CardPreview from './CardPreview';
 import DUO_FLIP_IMAGES from './duoFlipImages';
 import TravelSearch from './TravelSearch';
+import { SidebarToastDemo, ToastPlayground } from './ToastExamples';
+import { notifyDynamicIsland } from './dynamicIslandEvents';
 
 const INSTALL_COMMAND = 'npm install novamotion-ui';
 const DEVICE_PRESETS = {
@@ -195,6 +199,19 @@ const CUSTOMIZATION_GUIDES = {
     ],
     source: 'packages/novamotion-ui/src/MonthCalendar.tsx',
   },
+  DateRangeCalendar: {
+    attributes: [
+      ['checkIn / checkOut', 'Control the selected stay dates; omit either prop to manage that side internally.'],
+      ['defaultCheckIn / defaultCheckOut', 'Set initial check-in and check-out dates for an uncontrolled calendar.'],
+      ['minDate / maxDate', 'Set the first and last selectable dates.'],
+      ['disabledDates', 'Array of dates that cannot be selected.'],
+      ['numberOfMonths', 'Show one or two consecutive months; defaults to two.'],
+      ['weekStartsOn / locale', 'Choose Sunday or Monday as the first weekday and set date formatting locale.'],
+      ['onChange', 'Called with { checkIn, checkOut } whenever the stay range changes.'],
+      ['className', 'Additional Tailwind classes for the calendar.'],
+    ],
+    source: 'packages/novamotion-ui/src/DateRangeCalendar.tsx',
+  },
   CourseCard: {
     attributes: [
       ['badge', 'Text shown in the top-right badge. Set to an empty string to hide it.'],
@@ -211,6 +228,16 @@ const CUSTOMIZATION_GUIDES = {
       ['The title and description className values', 'Typography, spacing, and text colors.'],
     ],
     source: 'packages/novamotion-ui/src/CourseCard.tsx',
+  },
+  DynamicIsland: {
+    attributes: [
+      ['activity', 'Control the active "music", "call", or "delivery" activity. Omit it to use internal state.'],
+      ['autoCycle', 'Automatically rotate through activities when using internal state.'],
+      ['cycleDuration', 'Milliseconds between automatic activity changes (minimum 1800ms).'],
+      ['onActivityChange', 'Called when an activity is selected or changes during auto-cycle.'],
+      ['className', 'Additional Tailwind classes for the component wrapper.'],
+    ],
+    source: 'packages/novamotion-ui/src/DynamicIsland.tsx',
   },
 };
 
@@ -240,6 +267,13 @@ const ATTRIBUTES_BY_TYPE = {
     ['activeItem', 'Currently selected item.'],
     ['onSelect', 'Selection callback.'],
     ['className', 'Additional Tailwind classes for the navigation wrapper.'],
+  ],
+  calendar: [
+    ['checkIn / checkOut', 'Controlled selected dates.'],
+    ['minDate / maxDate / disabledDates', 'Limit which dates can be selected.'],
+    ['numberOfMonths', 'Show one or two consecutive months.'],
+    ['onChange', 'Called with the selected check-in and check-out dates.'],
+    ['className', 'Additional Tailwind classes for the calendar.'],
   ],
   cursor: [
     ['children', 'Content shown in the cursor demo stage.'],
@@ -288,6 +322,7 @@ const ATTRIBUTES_BY_TYPE = {
     ['max', 'Number of stars available in the rating input.'],
     ['onChange', 'Called with the new rating when a star is selected.'],
     ['title / description', 'Toast heading and supporting message.'],
+    ['variant', 'Choose success, info, warning, error, or loading toast styling.'],
     ['className', 'Additional Tailwind classes for the component.'],
   ],
 };
@@ -534,6 +569,12 @@ const COMPONENTS = {
     Component: FloatingNavbar,
     type: 'navigation',
   },
+  'date-range-calendar': {
+    name: 'DateRangeCalendar',
+    description: 'An animated hotel date picker for choosing check-in and check-out dates, with disabled dates and an automatic nights summary.',
+    Component: DateRangeCalendar,
+    type: 'calendar',
+  },
   'dock-navigation': {
     name: 'DockNavigation',
     description: 'A compact dock-style navigation with active feedback.',
@@ -544,6 +585,12 @@ const COMPONENTS = {
     name: 'SidebarNavigation',
     description: 'A vertical sidebar with selectable navigation links.',
     Component: SidebarNavigation,
+    type: 'navigation',
+  },
+  'dynamic-island': {
+    name: 'DynamicIsland',
+    description: 'A premium, animated Dynamic Island with always-on music, call, and live-delivery activity states.',
+    Component: DynamicIsland,
     type: 'navigation',
   },
   'bubble-navigation': {
@@ -730,7 +777,7 @@ const COMPONENTS = {
   },
   toast: {
     name: 'Toast',
-    description: 'A dismissible status notification with a built-in reopen action.',
+    description: 'An animated, dismissible status notification with success, info, warning, error, and loading styles.',
     Component: Toast,
     type: 'feedback',
   },
@@ -912,6 +959,7 @@ export default function Example() {
       ' beforeSrc="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=85" afterSrc="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1200&q=85"',
     ProgressBar: ' value={68} label="Upload progress"',
     MonthCalendar: ' weekStartsOn={1} onChange={(date) => console.log("Selected:", date)}',
+    DateRangeCalendar: ' numberOfMonths={2} onChange={(range) => console.log("Stay dates:", range)}',
     FloatingInput: ' label="Email address" type="email"',
     AnimatedInput: ' label="Search projects"',
     ToggleSwitch: ' label="Enable notifications"',
@@ -1206,17 +1254,30 @@ export default function ComponentDetail({ slug }) {
   const [previewRevision, setPreviewRevision] = useState(0);
   const detail = COMPONENTS[slug];
 
-  const copyText = async (text, successMessage) => {
+  const setDetailNotice = (message) => setNotice(message);
+
+  const copyText = async (text, successMessage, showIslandNotice = false) => {
+    const notifyCopy = (title, description, variant) => {
+      if (showIslandNotice) {
+        notifyDynamicIsland({ title, description, variant });
+      }
+    };
+
     if (!navigator.clipboard) {
-      setNotice('Clipboard access is unavailable in this browser.');
+      const message = 'Clipboard access is unavailable in this browser.';
+      setNotice(message);
+      notifyCopy('Could not copy source code', message, 'error');
       return;
     }
 
     try {
       await navigator.clipboard.writeText(text);
       setNotice(successMessage);
+      notifyCopy('Source code copied', successMessage, 'success');
     } catch {
-      setNotice('Could not copy. Check your browser clipboard permissions.');
+      const message = 'Could not copy. Check your browser clipboard permissions.';
+      setNotice(message);
+      notifyCopy('Could not copy source code', message, 'error');
     }
   };
 
@@ -1260,7 +1321,9 @@ export default function ComponentDetail({ slug }) {
           ? 'components/TravelSearch.jsx'
           : detail.name === 'DeviceFrame'
             ? 'packages/novamotion-ui/src/DeviceFrame.tsx'
-            : detail.type === 'chart'
+            : detail.type === 'calendar'
+              ? 'packages/novamotion-ui/src/DateRangeCalendar.tsx'
+              : detail.type === 'chart'
               ? 'packages/novamotion-ui/src/Charts.tsx'
               : detail.type === 'feedback'
                 ? 'packages/novamotion-ui/src/Feedback.tsx'
@@ -1276,6 +1339,7 @@ export default function ComponentDetail({ slug }) {
             text: 'Text',
             background: 'Backgrounds',
             navigation: 'Navigation',
+            calendar: 'Calendar',
             cursor: 'Cursor',
             image: 'Images',
             gallery: 'Galleries',
@@ -1291,7 +1355,9 @@ export default function ComponentDetail({ slug }) {
     detail.name === 'TravelSearch' ? (
       <Preview
         className="mx-auto"
-        onSearch={(payload) => setNotice(`${payload.tab} search is ready.`)}
+        onSearch={(payload) =>
+          setDetailNotice(`${payload.tab} search is ready.`)
+        }
       />
     ) : detail.name === 'DeviceFrame' ? (
       <Preview device={activePreviewStyle}>
@@ -1323,16 +1389,18 @@ export default function ComponentDetail({ slug }) {
       <Preview
         className="mx-auto w-full max-w-[400px]"
         onBook={({ date, time }) =>
-          setNotice(`Demo booking request: ${date.toLocaleDateString()} at ${time}.`)
+          setDetailNotice(
+            `Demo booking request: ${date.toLocaleDateString()} at ${time}.`,
+          )
         }
         onAddToCalendar={() =>
-          setNotice('Connect onAddToCalendar to your calendar flow.')
+          setDetailNotice('Connect onAddToCalendar to your calendar flow.')
         }
       />
     ) : detail.name === 'CourseCard' ? (
       <Preview
         className="mx-auto"
-        onClick={() => setNotice('Course card selected.')}
+        onClick={() => setDetailNotice('Course card selected.')}
       />
     ) : detail.name === 'AuthCard' ? (
       <Preview
@@ -1345,8 +1413,12 @@ export default function ComponentDetail({ slug }) {
           />
         }
       />
+    ) : detail.name === 'Toast' ? (
+      <ToastPlayground />
+    ) : detail.name === 'SidebarNavigation' ? (
+      <SidebarToastDemo />
     ) : detail.type === 'card' ? (
-      <CardPreview componentName={detail.name} onAction={setNotice} />
+      <CardPreview componentName={detail.name} onAction={setDetailNotice} />
     ) : detail.type === 'gallery' ? (
       <Preview
         images={DUO_FLIP_IMAGES}
@@ -1357,14 +1429,14 @@ export default function ComponentDetail({ slug }) {
       <Preview
         className="mx-auto"
         onProviderClick={(provider) =>
-          setNotice(`${provider} sign-in selected.`)
+          setDetailNotice(`${provider} sign-in selected.`)
         }
       />
     ) : detail.type === 'button' ? (
       <Preview
         disabled={disabled}
         className="mx-auto"
-        onClick={() => setNotice(`${detail.name} is working.`)}
+        onClick={() => setDetailNotice(`${detail.name} is working.`)}
       >
         {detail.name.replace(/Button$/, '')}
       </Preview>
@@ -1372,14 +1444,33 @@ export default function ComponentDetail({ slug }) {
       <Preview
         variant={previewStyle}
         className="mx-auto"
-        onChange={(id) => setNotice(`${id} tab selected.`)}
-        onAction={() => setNotice('Create action selected.')}
+        onChange={(id) => setDetailNotice(`${id} tab selected.`)}
+        onAction={() => setDetailNotice('Create action selected.')}
+      />
+    ) : detail.name === 'DateRangeCalendar' ? (
+      <Preview
+        className="mx-auto"
+        numberOfMonths={2}
+        onChange={({ checkIn, checkOut }) => {
+          if (checkIn && checkOut) {
+            const nights = Math.round(
+              (checkOut.getTime() - checkIn.getTime()) / 86400000,
+            );
+            setDetailNotice(
+              `${nights} ${nights === 1 ? 'night' : 'nights'} selected.`,
+            );
+          } else if (checkIn) {
+            setDetailNotice(
+              `Check-in set for ${checkIn.toLocaleDateString()}. Choose your check-out date.`,
+            );
+          }
+        }}
       />
     ) : detail.name === 'MonthCalendar' ? (
       <Preview
         className="mx-auto"
         onChange={(date) =>
-          setNotice(`Selected ${date.toLocaleDateString()}.`)
+          setDetailNotice(`Selected ${date.toLocaleDateString()}.`)
         }
       />
     ) : (
@@ -1458,7 +1549,10 @@ export default function ComponentDetail({ slug }) {
                 type="button"
                 aria-label={`Restart ${detail.name} preview`}
                 title="Restart preview"
-                onClick={() => setPreviewRevision((revision) => revision + 1)}
+                onClick={() => {
+                  setPreviewRevision((revision) => revision + 1);
+                  setDetailNotice('Preview restarted.');
+                }}
                 className="grid size-9 place-items-center rounded-xl border border-black/[0.07] bg-white text-[#52525B] transition-colors hover:bg-[#F4F4F5] hover:text-[#18181B] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#18181B]"
               >
                 <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -1471,7 +1565,14 @@ export default function ComponentDetail({ slug }) {
                   <input
                     type="checkbox"
                     checked={disabled}
-                    onChange={(event) => setDisabled(event.target.checked)}
+                    onChange={(event) => {
+                      setDisabled(event.target.checked);
+                      setDetailNotice(
+                        event.target.checked
+                          ? 'The preview button is disabled.'
+                          : 'The preview button is enabled.',
+                      );
+                    }}
                     className="accent-[#18181B]"
                   />
                   Disabled
@@ -1483,7 +1584,10 @@ export default function ComponentDetail({ slug }) {
                   <select
                     aria-label={`${detail.name} preview style`}
                     value={activePreviewStyle}
-                    onChange={(event) => setPreviewStyle(event.target.value)}
+                    onChange={(event) => {
+                      setPreviewStyle(event.target.value);
+                      setDetailNotice(`${event.target.value} preview selected.`);
+                    }}
                     className="rounded-lg border border-[#E4E4E7] bg-white px-2.5 py-2 text-[12px] text-[#18181B] outline-none focus:border-[#A1A1AA]"
                   >
                     {detail.styleOptions.map((option) => (
@@ -1511,7 +1615,10 @@ export default function ComponentDetail({ slug }) {
                         aria-label={`${preset.label} preview (${preset.width}px)`}
                         aria-pressed={device === key}
                         title={`${preset.label} preview`}
-                        onClick={() => setDevice(key)}
+                        onClick={() => {
+                          setDevice(key);
+                          setDetailNotice(`${preset.label} preview selected.`);
+                        }}
                         className={`grid size-9 place-items-center rounded-full transition-colors ${
                           device === key
                             ? 'bg-[#18181B] text-white shadow-sm'
@@ -1643,7 +1750,9 @@ export default function ComponentDetail({ slug }) {
                 </div>
                 <button
                   type="button"
-                  onClick={() => copyText(sourceCode, `${language} source copied.`)}
+                  onClick={() =>
+                    copyText(sourceCode, `${language} source copied.`, true)
+                  }
                   className="rounded-full bg-[#18181B] px-3.5 py-2 text-[12px] font-medium text-white transition-colors hover:bg-[#27272A]"
                 >
                   Copy code
@@ -1656,7 +1765,12 @@ export default function ComponentDetail({ slug }) {
                     key={option}
                     type="button"
                     aria-pressed={language === option}
-                    onClick={() => setLanguage(option)}
+                    onClick={() => {
+                      setLanguage(option);
+                      setDetailNotice(
+                        `Usage example switched to ${option}.`,
+                      );
+                    }}
                     className={`rounded-full px-3 py-1.5 text-[12px] font-medium transition-colors ${
                       language === option
                         ? 'bg-[#18181B] text-white'

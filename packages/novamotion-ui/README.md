@@ -45,8 +45,9 @@ Buttons accept standard button attributes. Cards accept standard div attributes;
 
 Text: `TypewriterText`, `TextReveal`, `GradientText`, `SplitText`, `ScrambleText`.
 Backgrounds: `AuroraBackground`, `ParticleBackground`, `GridBackground`, `SpotlightBackground`, `MeteorsBackground`.
-Navigation: `FloatingNavbar`, `DockNavigation`, `SidebarNavigation`, `BubbleNavigation`.
-Calendar: `MonthCalendar`.
+Navigation: `FloatingNavbar`, `DockNavigation`, `SidebarNavigation`, `DynamicIsland`, `BubbleNavigation`.
+`DynamicIsland` cycles through animated music, call, and delivery activities by default. Set `activity` to control the visible state, or set `autoCycle={false}` to keep the interactive activity selector manual.
+Calendar: `MonthCalendar` and `DateRangeCalendar`. The range picker supports controlled or default check-in/check-out dates, min/max and disabled dates, one- or two-month layouts, and an `onChange` callback that reports the selected stay.
 `MonthCalendar` supports controlled or default date selection, locale and week-start options, event markers, and keyboard navigation. Use `onChange` to receive the selected `Date`.
 Cursor: `CustomCursor`, `CursorTrail`, `CursorFollower`.
 Images: `ImageReveal`, `ParallaxImage`, `ImageCompare`.
@@ -55,7 +56,7 @@ Search: `SearchBar` and `AutocompleteSearch`.
 `SearchBar` supports controlled or default input values, clear and submit actions, and an `onSearch` callback. `AutocompleteSearch` filters typed options and supports keyboard navigation and `onSelect`.
 Forms: `AuthCard`, `FloatingInput`, `AnimatedInput`, `ToggleSwitch`, `OTPInput`.
 Charts: `BarChart`, `LineChart`, and `DonutChart` accept optional `{ label, value }` data points and a title.
-Feedback: `RatingInput` supports controlled or default ratings; `Toast` provides a dismissible status message that can be reopened.
+Feedback: `RatingInput` supports controlled or default ratings; `Toast` provides animated, dismissible success, info, warning, error, and loading styles, and can be reopened after dismissal.
 Frames: `DeviceFrame` renders custom children inside iOS, Android, or watch device frames. Pass your app screen as `children` and select the frame with the `device` prop.
 Scroll: `ScrollReveal`, `ScrollParallax`, `StickyScroll`.
 Gallery: `DuoFlip`, `MasonryGallery`, `ThumbnailCarousel`.
