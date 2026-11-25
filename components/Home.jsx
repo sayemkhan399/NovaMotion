@@ -1,6 +1,7 @@
 import React from 'react';
 import { Cookie } from 'next/font/google';
 import Link from 'next/link';
+import About from './About';
 import Footer from './Footer';
 
 const cookieFont = Cookie({
@@ -13,25 +14,23 @@ export default function Home() {
     <div className="flex-1 bg-white text-[#18181B] flex flex-col font-sans antialiased selection:bg-[#FFDD00]/40">
       {/* Main Hero Section */}
       <main className="flex-1 flex flex-col items-center justify-center px-6 pt-16 pb-28 text-center">
-
-
         {/* Subtitle Tagline */}
-        <p className="text-[13.5px] text-[#71717A] font-normal tracking-[-0.005em] mb-5">
-          Free animated React component library
+        <p className="text-[13.5px] text-[#71717A] font-medium uppercase tracking-[0.06em] mb-5">
+          Open-source UI motion toolkit
         </p>
 
         {/* Main Hero Headline */}
-        <h1 className="max-w-[780px] text-[44px] sm:text-[64px] md:text-[72px] font-bold tracking-[-0.038em] leading-[1.04] text-[#18181B] mb-7">
-          Interfaces that move
+        <h1 className="max-w-[780px] text-[44px] sm:text-[64px] md:text-[72px] font-extrabold tracking-[-0.04em] leading-[1.03] text-[#18181B] mb-7">
+          Motion that brings
           <br />
-          like they mean it.
+          your UI to life.
         </h1>
 
         {/* Supporting Paragraph with Hand-drawn Red Underline */}
-        <p className="max-w-[540px] text-[16px] sm:text-[17.5px] leading-[1.6] text-[#52525B] font-normal mb-10">
-          Hand-tuned motion components for React,{' '}
+        <p className="max-w-[540px] text-[16px] sm:text-[17.5px] leading-[1.65] text-[#52525B] font-normal mb-10">
+          Crafted, copy-paste React animations,{' '}
           <span className="relative inline-block font-semibold text-[#18181B]">
-            completely free.
+            100% free forever.
             {/* Hand-drawn red underline SVG */}
             <svg
               aria-hidden="true"
@@ -49,18 +48,18 @@ export default function Home() {
               />
             </svg>
           </span>{' '}
-          Play with each one live, then copy the code or give your AI agent the
-          prompt that comes with it.
+          Test every interaction in your browser, grab the source code, or drop
+          the included prompt straight into your AI workflow.
         </p>
 
         {/* Hero CTAs */}
-        <div className="flex flex-wrap items-center justify-center gap-3">
+        <div className="flex flex-wrap items-center justify-center gap-3.5">
           <Link
             href="/components"
-            className="inline-flex items-center justify-center gap-2.5 bg-[#18181B] hover:bg-[#27272A] active:scale-[0.99] text-white px-7 py-3 rounded-full shadow-[0_2px_10px_rgba(24,24,27,0.16)] transition-all duration-150"
+            className="inline-flex items-center justify-center gap-2.5 bg-[#18181B] hover:bg-[#27272A] active:scale-[0.98] text-white px-7 py-3 rounded-full shadow-[0_2px_10px_rgba(24,24,27,0.16)] transition-all duration-150"
           >
             <span className="text-[15px] font-semibold tracking-[-0.01em]">
-              Browse Components
+              Explore Library
             </span>
             <svg
               aria-hidden="true"
@@ -79,10 +78,10 @@ export default function Home() {
           </Link>
 
           <a
-            href="https://www.buymeacoffee.com"
+            href="https://www.novamatrix.tech/"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2.5 bg-[#FFDD00] hover:bg-[#f7d600] active:scale-[0.99] text-[#18181B] px-7 py-3 rounded-full shadow-[0_2px_10px_rgba(255,221,0,0.35)] transition-all duration-150"
+            className="inline-flex items-center justify-center gap-2.5 bg-[#FFDD00] hover:bg-[#f7d600] active:scale-[0.98] text-[#18181B] px-7 py-3 rounded-full shadow-[0_2px_10px_rgba(255,221,0,0.35)] transition-all duration-150"
           >
             {/* Coffee Cup Icon */}
             <svg
@@ -124,11 +123,12 @@ export default function Home() {
             <span
               className={`${cookieFont.className} text-[26px] leading-none tracking-[0.01em] text-[#18181B] pt-0.5`}
             >
-              Buy me a coffee
+              Explore NovaMatrix
             </span>
           </a>
         </div>
       </main>
+      <About/>
       <Footer />
     </div>
   );

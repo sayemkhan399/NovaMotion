@@ -52,8 +52,34 @@ export type {
   ToastStackHandle,
   ToastStackProps,
 } from "./ToastStack.js";
-export { CanvasShadowLoader, SkeletonLoader } from "./Loaders.js";
-export type { CanvasShadowLoaderProps, SkeletonLoaderProps } from "./Loaders.js";
+export {
+  CanvasShadowLoader,
+  ClockSpinLoader,
+  DualRingLoader,
+  HeartbeatLoader,
+  HourglassLoader,
+  NewtonCradleLoader,
+  ProgressRingLoader,
+  SkeletonLoader,
+  SquareGridLoader,
+  StripedBarLoader,
+  TwinSquaresLoader,
+  WaveDotsLoader,
+} from "./Loaders.js";
+export type {
+  CanvasShadowLoaderProps,
+  ClockSpinLoaderProps,
+  DualRingLoaderProps,
+  HeartbeatLoaderProps,
+  HourglassLoaderProps,
+  NewtonCradleLoaderProps,
+  ProgressRingLoaderProps,
+  SkeletonLoaderProps,
+  SquareGridLoaderProps,
+  StripedBarLoaderProps,
+  TwinSquaresLoaderProps,
+  WaveDotsLoaderProps,
+} from "./Loaders.js";
 export { AutocompleteSearch, SearchBar } from "./Search.js";
 export type {
   AutocompleteOption,

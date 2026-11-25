@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Laptop, Monitor, Smartphone } from 'lucide-react';
+import { ArrowUpRight, Bug, Check, Copy, Laptop, Minus, Monitor, Plus, RotateCcw, Share, Smartphone, Sparkles, X } from 'lucide-react';
 import {
   AuthCard,
   AutocompleteSearch,
@@ -17,6 +17,7 @@ import {
   BubbleNavigation,
   CanvasShadowLoader,
   CircularLoader,
+  ClockSpinLoader,
   CursorFollower,
   CursorTrail,
   CourseCard,
@@ -25,6 +26,7 @@ import {
   DeviceFrame,
   DonutChart,
   DockNavigation,
+  DualRingLoader,
   DynamicIsland,
   DuoFlip,
   FloatingInput,
@@ -37,6 +39,8 @@ import {
   GridBackground,
   GlassCard,
   GlowButton,
+  HeartbeatLoader,
+  HourglassLoader,
   ImageCompare,
   ImageReveal,
   LiquidGlassButton,
@@ -46,10 +50,12 @@ import {
   MonthCalendar,
   MeteorsBackground,
   MorphingLoader,
+  NewtonCradleLoader,
   OTPInput,
   ParallaxImage,
   ParticleBackground,
   ProgressBar,
+  ProgressRingLoader,
   ProUpgradeCard,
   RatingInput,
   RippleButton,
@@ -64,15 +70,19 @@ import {
   SpotlightBackground,
   SpotlightCard,
   SplitText,
+  SquareGridLoader,
   StickyScroll,
+  StripedBarLoader,
   TabBar,
   ThumbnailCarousel,
   TextReveal,
   Toast,
   ToastStack,
   ToggleSwitch,
+  TwinSquaresLoader,
   TypewriterText,
   TiltCard,
+  WaveDotsLoader,
 } from 'novamotion-ui';
 import CardPreview from './CardPreview';
 import DUO_FLIP_IMAGES from './duoFlipImages';
@@ -743,6 +753,66 @@ const COMPONENTS = {
     Component: CanvasShadowLoader,
     type: 'loader',
   },
+  'dual-ring-loader': {
+    name: 'DualRingLoader',
+    description: 'Two concentric rings spinning in opposite directions for a balanced loading state.',
+    Component: DualRingLoader,
+    type: 'loader',
+  },
+  'wave-dots-loader': {
+    name: 'WaveDotsLoader',
+    description: 'A row of dots bouncing in a smooth wave pattern.',
+    Component: WaveDotsLoader,
+    type: 'loader',
+  },
+  'hourglass-loader': {
+    name: 'HourglassLoader',
+    description: 'A classic hourglass that flips as sand flows from top to bottom.',
+    Component: HourglassLoader,
+    type: 'loader',
+  },
+  'progress-ring-loader': {
+    name: 'ProgressRingLoader',
+    description: 'A circular ring that fills to show loading progress.',
+    Component: ProgressRingLoader,
+    type: 'loader',
+  },
+  'striped-bar-loader': {
+    name: 'StripedBarLoader',
+    description: 'An animated striped progress bar for active loading states.',
+    Component: StripedBarLoader,
+    type: 'loader',
+  },
+  'heartbeat-loader': {
+    name: 'HeartbeatLoader',
+    description: 'A pulsing heartbeat indicator for lively loading feedback.',
+    Component: HeartbeatLoader,
+    type: 'loader',
+  },
+  'square-grid-loader': {
+    name: 'SquareGridLoader',
+    description: 'A 3x3 grid of squares fading in a rhythmic pattern.',
+    Component: SquareGridLoader,
+    type: 'loader',
+  },
+  'newton-cradle-loader': {
+    name: 'NewtonCradleLoader',
+    description: "A Newton's cradle animation with swinging end balls.",
+    Component: NewtonCradleLoader,
+    type: 'loader',
+  },
+  'clock-spin-loader': {
+    name: 'ClockSpinLoader',
+    description: 'A clock face with hour and minute hands spinning at different speeds.',
+    Component: ClockSpinLoader,
+    type: 'loader',
+  },
+  'twin-squares-loader': {
+    name: 'TwinSquaresLoader',
+    description: 'Two squares orbiting and rotating around each other.',
+    Component: TwinSquaresLoader,
+    type: 'loader',
+  },
   'floating-input': {
     name: 'FloatingInput',
     description: 'An accessible input with a label that floats on focus.',
@@ -1375,6 +1445,70 @@ export default function Example() {
 }`;
 }
 
+function CodeSnippetBox({ code }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
+  };
+
+  return (
+    <div className="relative rounded-2xl bg-[#18181B] border border-[#27272A] overflow-hidden group">
+      <div className="absolute top-3 right-3 z-10">
+        <button
+          type="button"
+          onClick={handleCopy}
+          className="p-1.5 rounded-md text-[#A1A1AA] hover:text-white bg-[#27272A]/50 hover:bg-[#3F3F46] backdrop-blur-sm transition-colors"
+          aria-label="Copy code"
+        >
+          {copied ? <Check className="w-4 h-4 text-[#FFDD00]" /> : <Copy className="w-4 h-4" />}
+        </button>
+      </div>
+      <div className="p-4 overflow-x-auto text-[13px] leading-[1.6] font-mono text-[#E4E4E7]">
+        <pre className="m-0"><code>{code}</code></pre>
+      </div>
+    </div>
+  );
+}
+
+function AccordionSection({ title, isOpen, onToggle, children }) {
+  return (
+    <div className="transition-colors">
+      <button
+        type="button"
+        onClick={onToggle}
+        className={`w-full px-6 py-4 flex items-center justify-between text-left transition-colors duration-300 ${
+          isOpen ? 'bg-white' : 'hover:bg-[#FAFAFA]'
+        }`}
+      >
+        <span className="text-[15px] font-medium text-[#18181B]">{title}</span>
+        <span
+          className={`w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300 ${
+            isOpen ? 'bg-[#18181B] text-white' : 'bg-[#F4F4F5] text-[#52525B]'
+          }`}
+        >
+          {isOpen ? <Minus className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+        </span>
+      </button>
+      <div
+        className={`grid transition-all duration-500 ease-in-out ${
+          isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+        }`}
+      >
+        <div className="overflow-hidden">
+          <div className="px-6 pb-6 pt-2 bg-white">{children}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function ComponentDetail({ slug }) {
   const [language, setLanguage] = useState('JSX');
   const [disabled, setDisabled] = useState(false);
@@ -1382,6 +1516,9 @@ export default function ComponentDetail({ slug }) {
   const [device, setDevice] = useState('pc');
   const [previewStyle, setPreviewStyle] = useState('pill');
   const [previewRevision, setPreviewRevision] = useState(0);
+  const [activeTab, setActiveTab] = useState('preview');
+  const [openSection, setOpenSection] = useState('install');
+  const [promptCopied, setPromptCopied] = useState(false);
   const detail = COMPONENTS[slug];
 
   const setDetailNotice = (message) => setNotice(message);
@@ -1482,6 +1619,7 @@ export default function ComponentDetail({ slug }) {
             feedback: 'Feedback',
             scroll: 'Scroll',
           }[detail.type] ?? 'Components';
+
   const renderComponent = () =>
     detail.name === 'BentoDemo' ? (
       <BentoDemo className="w-full" />
@@ -1612,109 +1750,205 @@ export default function ComponentDetail({ slug }) {
       <Preview />
     );
 
-  return (
-    <main className="min-h-[calc(100vh-88px)] bg-[#FAFAFA] px-5 py-8 text-[#18181B] sm:px-8 sm:py-12">
-      <div className="mx-auto max-w-[1400px]">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <Link
-            href="/components"
-            className="inline-flex items-center gap-2 rounded-full border border-black/[0.06] bg-white px-4 py-2.5 text-[12px] font-medium text-[#52525B] shadow-[0_3px_12px_rgba(0,0,0,0.025)] transition-all hover:border-black/[0.12] hover:text-[#18181B]"
-          >
-            <span aria-hidden="true" className="text-base leading-none">←</span>
-            All components
-          </Link>
-          <button
-            type="button"
-            onClick={() => copyText(window.location.href, 'Component link copied.')}
-            className="inline-flex items-center gap-2 rounded-full border border-black/[0.06] bg-white px-4 py-2.5 text-[12px] font-medium text-[#52525B] shadow-[0_3px_12px_rgba(0,0,0,0.025)] transition-all hover:border-black/[0.12] hover:bg-[#F8F8F8] hover:text-[#18181B]"
-          >
-            <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 16V4" />
-              <path d="m7 9 5-5 5 5" />
-              <path d="M5 12v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" />
-            </svg>
-            Share component
-          </button>
-        </div>
+  const handleReset = () => {
+    setDisabled(false);
+    setPreviewStyle(detail.styleOptions?.[0] ?? 'pill');
+    setDevice('pc');
+    setPreviewRevision((revision) => revision + 1);
+    setNotice('Preview reset.');
+  };
 
-        <div className="mb-8 mt-9 flex flex-col gap-5 border-b border-black/[0.06] pb-8 sm:flex-row sm:items-end sm:justify-between sm:pb-10">
-          <div className="max-w-3xl">
-            <span className="inline-flex items-center gap-2 rounded-full border border-black/[0.07] bg-white px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.13em] text-[#52525B] shadow-[0_2px_8px_rgba(0,0,0,0.025)]">
-              <span className="size-1.5 rounded-full bg-[#FFDD00]" />
-              {categoryName} · NovaMotion UI
-            </span>
-            <h1 className="mt-4 text-4xl font-semibold tracking-[-0.045em] text-[#18181B] sm:text-5xl lg:text-[56px] lg:leading-[1.05]">
+  const handleCopyPrompt = async () => {
+    const prompt = `Create a React ${detail.name} component for NovaMotion UI. ${detail.description} Use Tailwind CSS and keep the API aligned with the existing component props and behavior.`;
+    try {
+      await navigator.clipboard.writeText(prompt);
+      setPromptCopied(true);
+      window.setTimeout(() => setPromptCopied(false), 2000);
+    } catch {
+      setPromptCopied(false);
+      setNotice('Could not copy prompt. Check your browser clipboard permissions.');
+    }
+  };
+
+  const related = Object.entries(COMPONENTS)
+    .filter(([itemSlug, item]) => itemSlug !== slug && item.type === detail.type)
+    .slice(0, 4)
+    .map(([itemSlug, item]) => ({ name: item.name, href: `/components/${itemSlug}` }));
+
+  const accordionSections = [
+    {
+      id: 'install',
+      title: 'Install',
+      content: (
+        <div className="space-y-3 text-[13.5px] text-[#52525B]">
+          <p>Install the NovaMotion UI package in your project:</p>
+          <CodeSnippetBox code={INSTALL_COMMAND} />
+          <p className="text-[12px] leading-relaxed text-[#71717A]">
+            NovaMotion UI is prepared for npm publishing, but is not published yet. Tailwind CSS is required.
+          </p>
+        </div>
+      ),
+    },
+    {
+      id: 'usage',
+      title: 'Usage',
+      content: (
+        <div className="space-y-3">
+          <div className="flex gap-1">
+            {['JSX', 'TSX'].map((option) => (
+              <button
+                key={option}
+                type="button"
+                aria-pressed={language === option}
+                onClick={() => {
+                  setLanguage(option);
+                  setDetailNotice(`Usage example switched to ${option}.`);
+                }}
+                className={`rounded-full px-3 py-1.5 text-[12px] font-medium transition-colors ${
+                  language === option
+                    ? 'bg-[#18181B] text-white'
+                    : 'text-[#71717A] hover:bg-[#F4F4F5] hover:text-[#18181B]'
+                }`}
+              >
+                .{option.toLowerCase()}
+              </button>
+            ))}
+          </div>
+          <CodeSnippetBox code={sourceCode} />
+        </div>
+      ),
+    },
+    {
+      id: 'props',
+      title: 'Props',
+      content: (
+        <div className="overflow-x-auto text-[13px]">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-[#E4E4E7] text-[#71717A]">
+                <th className="py-2 pr-4 font-medium">Prop</th>
+                <th className="py-2 font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#F4F4F5] text-[#18181B]">
+              {attributes.map(([name, description]) => (
+                <tr key={name}>
+                  <td className="py-2.5 pr-4 align-top font-mono text-[12px] text-[#18181B]">{name}</td>
+                  <td className="py-2.5 align-top text-[#52525B]">{description}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ),
+    },
+    {
+      id: 'customization',
+      title: 'Customization',
+      content: (
+        <div className="space-y-4 text-[13.5px] text-[#52525B]">
+          <p>
+            Set component props to change content and behavior. Use <code className="rounded bg-[#F4F4F5] px-1 py-0.5 text-[12px] text-[#18181B]">className</code> for supported Tailwind overrides. For deeper visual changes, edit the source component.
+          </p>
+          <ul className="space-y-2">
+            {(customization?.selectors ?? [
+              [`${detail.name} root element`, `Search for the ${detail.name} export in ${sourcePath} and change its root className.`],
+              ['Nested elements', 'Edit the relevant child tag className values in the same source component.'],
+            ]).map(([target, description]) => (
+              <li key={target} className="text-[13px] leading-relaxed text-[#71717A]">
+                <code className="font-mono font-semibold text-[#52525B]">{target}</code>
+                <span> — {description}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="border-t border-[#F4F4F5] pt-3 text-[12px] text-[#71717A]">
+            Source: <code className="break-all font-mono">{sourcePath}</code>
+          </p>
+        </div>
+      ),
+    },
+  ];
+
+  const previewContent = (
+    <GsapInteractive key={previewRevision} className="w-full">
+      {detail.devicePreview ? (
+        <ResponsivePreview device={device}>{renderComponent()}</ResponsivePreview>
+      ) : (
+        <div className="flex min-h-[360px] w-full items-center justify-center p-5 sm:p-8">
+          <div className="w-full flex items-center justify-center">{renderComponent()}</div>
+        </div>
+      )}
+    </GsapInteractive>
+  );
+
+  return (
+    <div className="min-h-[calc(100vh-88px)] lg:h-[calc(100vh-88px)] bg-white text-[#18181B] font-sans antialiased flex flex-col lg:flex-row lg:overflow-hidden p-4 sm:p-6 gap-6">
+      <aside className="w-full lg:w-[295px] shrink-0 flex flex-col justify-between px-2 py-2 lg:min-h-0 lg:overflow-y-auto">
+        <div>
+          <div className="flex items-center gap-2.5 mb-3">
+            <h1 className="text-[24px] font-bold tracking-[-0.03em] text-[#18181B]">
               {detail.name}
             </h1>
-            <p className="mt-3 max-w-2xl text-[14px] leading-7 text-[#71717A] sm:text-[15px]">
-              {detail.description}
-            </p>
-          </div>
-          <div className="flex shrink-0 items-center gap-2 rounded-2xl border border-black/[0.06] bg-white px-3.5 py-3 shadow-[0_4px_18px_rgba(0,0,0,0.025)]">
-            <span className="grid size-8 place-items-center rounded-xl bg-[#F4F4F5] text-[#52525B]">
-              <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 3v3" />
-                <path d="M18.4 5.6 16.3 7.7" />
-                <path d="M21 12h-3" />
-                <path d="M18.4 18.4 16.3 16.3" />
-                <path d="M12 21v-3" />
-                <path d="m5.6 18.4 2.1-2.1" />
-                <path d="M3 12h3" />
-                <path d="m5.6 5.6 2.1 2.1" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
+            <span className="px-2.5 py-0.5 rounded-full bg-[#18181B] text-white text-[11px] font-semibold">
+              {categoryName}
             </span>
-            <span className="text-[11px] font-medium text-[#71717A]">Live demo</span>
-            <span className="size-1.5 rounded-full bg-emerald-500" />
           </div>
-        </div>
 
-        <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1.08fr)_minmax(340px,0.92fr)] lg:gap-6">
-          <section className="min-w-0 overflow-hidden rounded-[26px] border border-black/[0.06] bg-white shadow-[0_12px_42px_rgba(0,0,0,0.045)] lg:sticky lg:top-6 lg:self-start">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-black/[0.055] px-4 py-4 sm:px-5">
-              <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#A1A1AA]">
-                  Playground
-                </p>
-                <h2 className="mt-1 text-[15px] font-semibold tracking-tight">
-                  Try it out
-                </h2>
-              </div>
+          <div className="flex flex-wrap items-center gap-1.5 mb-5">
+            {[categoryName, detail.type, 'Motion'].filter((tag, index, arr) => arr.indexOf(tag) === index).map((tag) => (
+              <span
+                key={tag}
+                className="px-2.5 py-1 rounded-full bg-[#F4F4F5] text-[#71717A] text-[12px] font-medium capitalize"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          <p className="text-[13.5px] leading-[1.6] text-[#52525B] mb-8">
+            {detail.description}
+          </p>
+
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[13px] font-semibold text-[#18181B]">Customize</span>
               <button
                 type="button"
-                aria-label={`Restart ${detail.name} preview`}
-                title="Restart preview"
-                onClick={() => {
-                  setPreviewRevision((revision) => revision + 1);
-                  setDetailNotice('Preview restarted.');
-                }}
-                className="grid size-9 place-items-center rounded-xl border border-black/[0.07] bg-white text-[#52525B] transition-colors hover:bg-[#F4F4F5] hover:text-[#18181B] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#18181B]"
+                onClick={handleReset}
+                className="text-[12px] text-[#71717A] hover:text-[#18181B] transition-colors"
               >
-                <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M3 12a9 9 0 1 0 2.64-6.36L3 8" />
-                  <path d="M3 3v5h5" />
-                </svg>
+                Reset
               </button>
+            </div>
+
+            <div className="space-y-2.5">
               {detail.type === 'button' && (
-                <label className="flex cursor-pointer items-center gap-2 text-[12px] text-[#52525B]">
-                  <input
-                    type="checkbox"
-                    checked={disabled}
-                    onChange={(event) => {
-                      setDisabled(event.target.checked);
-                      setDetailNotice(
-                        event.target.checked
-                          ? 'The preview button is disabled.'
-                          : 'The preview button is enabled.',
-                      );
+                <div className="flex items-center justify-between h-11 px-3.5 rounded-xl bg-[#F4F4F5]">
+                  <span className="text-[13px] font-medium text-[#3F3F46]">Disabled</span>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={disabled}
+                    onClick={() => {
+                      const next = !disabled;
+                      setDisabled(next);
+                      setDetailNotice(next ? 'The preview button is disabled.' : 'The preview button is enabled.');
                     }}
-                    className="accent-[#18181B]"
-                  />
-                  Disabled
-                </label>
+                    className={`w-11 h-6 rounded-full p-0.5 transition-colors duration-200 flex items-center ${
+                      disabled ? 'bg-[#18181B]' : 'bg-[#D4D4D8]'
+                    }`}
+                  >
+                    <span
+                      className={`w-5 h-5 rounded-full bg-white shadow-sm transform transition-transform duration-200 ${
+                        disabled ? 'translate-x-5' : 'translate-x-0'
+                      }`}
+                    />
+                  </button>
+                </div>
               )}
+
               {detail.styleOptions?.length > 1 && (
-                <label className="flex items-center gap-2 text-[12px] font-medium text-[#52525B]">
+                <label className="flex items-center justify-between h-11 px-3.5 rounded-xl bg-[#F4F4F5] text-[13px] font-medium text-[#3F3F46]">
                   <span>{detail.name === 'DeviceFrame' ? 'Device' : 'Style'}</span>
                   <select
                     aria-label={`${detail.name} preview style`}
@@ -1723,207 +1957,204 @@ export default function ComponentDetail({ slug }) {
                       setPreviewStyle(event.target.value);
                       setDetailNotice(`${event.target.value} preview selected.`);
                     }}
-                    className="rounded-lg border border-[#E4E4E7] bg-white px-2.5 py-2 text-[12px] text-[#18181B] outline-none focus:border-[#A1A1AA]"
+                    className="rounded-lg border border-[#E4E4E7] bg-white px-2.5 py-1.5 text-[12px] text-[#18181B] outline-none focus:border-[#A1A1AA]"
                   >
                     {detail.styleOptions.map((option) => (
                       <option key={option} value={option}>
-                        {option === 'ios'
-                          ? 'iOS'
-                          : option.charAt(0).toUpperCase() + option.slice(1)}
+                        {option === 'ios' ? 'iOS' : option.charAt(0).toUpperCase() + option.slice(1)}
                       </option>
                     ))}
                   </select>
                 </label>
               )}
+
               {detail.devicePreview && (
-                <div
-                  role="group"
-                  aria-label="Preview device size"
-                  className="flex items-center gap-1 rounded-full bg-[#F4F4F5] p-1"
-                >
-                  {Object.entries(DEVICE_PRESETS).map(([key, preset]) => {
-                    const Icon = preset.Icon;
-                    return (
-                      <button
-                        key={key}
-                        type="button"
-                        aria-label={`${preset.label} preview (${preset.width}px)`}
-                        aria-pressed={device === key}
-                        title={`${preset.label} preview`}
-                        onClick={() => {
-                          setDevice(key);
-                          setDetailNotice(`${preset.label} preview selected.`);
-                        }}
-                        className={`grid size-9 place-items-center rounded-full transition-colors ${
-                          device === key
-                            ? 'bg-[#18181B] text-white shadow-sm'
-                            : 'text-[#71717A] hover:bg-white hover:text-[#18181B]'
-                        }`}
-                      >
-                        <Icon aria-hidden="true" size={17} strokeWidth={2} />
-                        <span className="sr-only">{preset.label}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
-            <GsapInteractive key={previewRevision} className="w-full">
-              {detail.devicePreview ? (
-                <ResponsivePreview device={device}>
-                  {renderComponent()}
-                </ResponsivePreview>
-              ) : (
-                <div className="flex min-h-[360px] w-full items-center justify-center bg-[#F8F8F8] p-5 sm:p-8">
-                  {renderComponent()}
-                </div>
-              )}
-            </GsapInteractive>
-            <div className="flex items-center justify-between gap-4 border-t border-black/[0.055] px-5 py-4">
-              <p className="text-[11px] font-medium text-[#71717A]">
-                Interactive preview
-              </p>
-              <span className="inline-flex items-center gap-1.5 text-[10px] font-medium text-[#A1A1AA]">
-                <span className="size-1.5 rounded-full bg-[#FFDD00]" />
-                Click, hover or type to explore
-              </span>
-            </div>
-          </section>
-
-          <aside className="min-w-0 space-y-4 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:overflow-y-auto lg:overscroll-contain lg:pr-1">
-            <section className="rounded-[24px] border border-black/[0.06] bg-white p-5 shadow-[0_8px_28px_rgba(0,0,0,0.035)] sm:p-6">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A1A1AA]">
-                Customization guide
-              </p>
-              <h2 className="mt-1 text-[15px] font-semibold">
-                Change content and styles
-              </h2>
-              <p className="mt-3 text-[12px] leading-relaxed text-[#71717A]">
-                Set the component props to change its content and behavior.
-                Use <code className="rounded bg-[#F4F4F5] px-1">className</code>{' '}
-                for supported Tailwind overrides. To change internal colors,
-                spacing, or markup, edit the indicated source component and its
-                utility classes.
-              </p>
-              <h3 className="mt-5 text-[12px] font-semibold text-[#18181B]">
-                Common attributes
-              </h3>
-              <p className="mt-1 text-[11px] leading-relaxed text-[#71717A]">
-                Component-specific inputs are shown in the usage example.
-              </p>
-              <dl className="mt-2 space-y-3">
-                {attributes.map(([name, description]) => (
-                  <div key={name}>
-                    <dt className="font-mono text-[11px] font-semibold text-[#52525B]">
-                      {name}
-                    </dt>
-                    <dd className="mt-0.5 text-[11px] leading-relaxed text-[#71717A]">
-                      {description}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-              <h3 className="mt-5 text-[12px] font-semibold text-[#18181B]">
-                CSS targets
-              </h3>
-              <ul className="mt-2 space-y-2">
-                {(customization?.selectors ?? [
-                  [`${detail.name} root element`, `Search for the ${detail.name} export in ${sourcePath} and change its root className.`],
-                  ['Nested elements', 'Edit the relevant child tag className values in the same source component.'],
-                ]).map(([target, description]) => (
-                  <li key={target} className="text-[11px] leading-relaxed text-[#71717A]">
-                    <code className="font-mono font-semibold text-[#52525B]">{target}</code>
-                    <span> — {description}</span>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-4 border-t border-[#F4F4F5] pt-3 text-[11px] text-[#71717A]">
-                Source: <code className="break-all font-mono">{sourcePath}</code>
-              </p>
-            </section>
-
-            <section className="rounded-[24px] border border-black/[0.06] bg-white p-5 shadow-[0_8px_28px_rgba(0,0,0,0.035)] sm:p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A1A1AA]">
-                    Install
-                  </p>
-                  <h2 className="mt-1 text-[15px] font-semibold">Add the library</h2>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => copyText(INSTALL_COMMAND, 'Install command copied.')}
-                  className="rounded-full bg-[#F4F4F5] px-3 py-1.5 text-[12px] font-medium text-[#52525B] transition-colors hover:bg-[#E4E4E7]"
-                >
-                  Copy
-                </button>
-              </div>
-              <pre className="mt-4 overflow-x-auto rounded-[14px] bg-[#18181B] px-4 py-3 text-[12px] text-[#F4F4F5]">
-                <code>{INSTALL_COMMAND}</code>
-              </pre>
-              <p className="mt-3 text-[11px] leading-relaxed text-[#A1A1AA]">
-                NovaMotion UI is prepared for npm publishing, but is not published yet.
-                Tailwind CSS is required; see the package README for setup.
-              </p>
-            </section>
-
-            {notice && (
-              <p role="status" className="px-1 text-[12px] text-[#52525B]">
-                {notice}
-              </p>
-            )}
-            <section className="overflow-hidden rounded-[24px] border border-black/[0.06] bg-white shadow-[0_8px_28px_rgba(0,0,0,0.035)]">
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#F4F4F5] px-4 py-4 sm:px-5">
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#A1A1AA]">
-                    Usage code
-                  </p>
-                  <h2 className="mt-1 text-[15px] font-semibold">
-                    Example.{language.toLowerCase()}
-                  </h2>
-                </div>
-                <button
-                  type="button"
-                  onClick={() =>
-                    copyText(sourceCode, `${language} source copied.`, true)
-                  }
-                  className="rounded-full bg-[#18181B] px-3.5 py-2 text-[12px] font-medium text-white transition-colors hover:bg-[#27272A]"
-                >
-                  Copy code
-                </button>
-              </div>
-
-              <div className="flex gap-1 border-b border-[#F4F4F5] px-4 py-2">
-                {['JSX', 'TSX'].map((option) => (
-                  <button
-                    key={option}
-                    type="button"
-                    aria-pressed={language === option}
-                    onClick={() => {
-                      setLanguage(option);
-                      setDetailNotice(
-                        `Usage example switched to ${option}.`,
-                      );
+                <label className="flex items-center justify-between h-11 px-3.5 rounded-xl bg-[#F4F4F5] text-[13px] font-medium text-[#3F3F46]">
+                  <span>Viewport</span>
+                  <select
+                    aria-label="Preview device size"
+                    value={device}
+                    onChange={(event) => {
+                      setDevice(event.target.value);
+                      setDetailNotice(`${DEVICE_PRESETS[event.target.value].label} preview selected.`);
                     }}
-                    className={`rounded-full px-3 py-1.5 text-[12px] font-medium transition-colors ${
-                      language === option
-                        ? 'bg-[#18181B] text-white'
-                        : 'text-[#71717A] hover:bg-[#F4F4F5] hover:text-[#18181B]'
-                    }`}
+                    className="rounded-lg border border-[#E4E4E7] bg-white px-2.5 py-1.5 text-[12px] text-[#18181B] outline-none focus:border-[#A1A1AA]"
                   >
-                    .{option.toLowerCase()}
-                  </button>
+                    {Object.entries(DEVICE_PRESETS).map(([key, preset]) => (
+                      <option key={key} value={key}>{preset.label}</option>
+                    ))}
+                  </select>
+                </label>
+              )}
+
+              {!detail.styleOptions?.length && detail.type !== 'button' && !detail.devicePreview && (
+                <div className="rounded-xl bg-[#F4F4F5] px-3.5 py-3 text-[12px] leading-relaxed text-[#71717A]">
+                  This component has no interactive preview controls. Use the source and props sections to customize it.
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="pt-6">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-[13px] font-semibold text-[#18181B]">More components</span>
+            <Link
+              href="/components"
+              className="text-[12px] text-[#71717A] hover:text-[#18181B] transition-colors"
+            >
+              See all
+            </Link>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {related.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#F4F4F5] hover:bg-[#E4E4E7] text-[#3F3F46] text-[12px] font-medium transition-colors"
+              >
+                <span>{item.name}</span>
+                <ArrowUpRight className="w-3 h-3 text-[#71717A]" />
+              </Link>
+            ))}
+          </div>
+        </div>
+      </aside>
+
+      <section className="flex-1 relative rounded-[28px] bg-[#F3F3F3] min-h-[640px] lg:min-h-0 overflow-hidden">
+        <Link
+          href="/components"
+          aria-label="Close component details"
+          className="absolute top-5 right-5 z-20 w-9 h-9 rounded-full bg-white hover:bg-[#FAFAFA] text-[#52525B] hover:text-[#18181B] shadow-[0_2px_8px_rgba(0,0,0,0.05)] flex items-center justify-center transition-all"
+        >
+          <X className="w-4 h-4" />
+        </Link>
+
+        <div className="h-full overflow-y-auto px-6 sm:px-10 pt-16 pb-28">
+          <div className="min-h-full w-full flex flex-col items-center justify-center">
+            {activeTab === 'preview' ? (
+              <div className="w-full flex items-center justify-center">{previewContent}</div>
+            ) : (
+              <div className="w-full max-w-[760px] bg-white rounded-[24px] shadow-[0_6px_28px_rgba(0,0,0,0.03)] border border-[#E4E4E7]/60 divide-y divide-[#F4F4F5] overflow-hidden my-4">
+                {accordionSections.map((section) => (
+                  <AccordionSection
+                    key={section.id}
+                    title={section.title}
+                    isOpen={openSection === section.id}
+                    onToggle={() => setOpenSection(openSection === section.id ? null : section.id)}
+                  >
+                    {section.content}
+                  </AccordionSection>
                 ))}
               </div>
-
-              <pre className="max-h-[420px] min-h-[230px] overflow-auto bg-[#18181B] p-4 text-[11px] leading-[1.7] text-[#E4E4E7] sm:p-5 sm:text-[12px]">
-                <code>{sourceCode}</code>
-              </pre>
-            </section>
-          </aside>
+            )}
+          </div>
         </div>
-      </div>
-    </main>
+
+        {notice && (
+          <p role="status" className="absolute bottom-24 left-1/2 -translate-x-1/2 rounded-full bg-white/90 px-4 py-2 text-[12px] text-[#52525B] shadow-sm border border-[#E4E4E7]/70">
+            {notice}
+          </p>
+        )}
+
+        <div className="fixed lg:absolute bottom-5 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 bg-white p-1.5 rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-[#E4E4E7]/80">
+          <div className="flex items-center bg-[#F4F4F5] p-0.5 rounded-full">
+            <button
+              type="button"
+              onClick={() => setActiveTab('preview')}
+              className={`px-3.5 py-1.5 rounded-full text-[13px] font-medium transition-all ${
+                activeTab === 'preview'
+                  ? 'bg-white text-[#18181B] shadow-sm'
+                  : 'text-[#71717A] hover:text-[#18181B]'
+              }`}
+            >
+              Preview
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('source')}
+              className={`px-3.5 py-1.5 rounded-full text-[13px] font-medium transition-all ${
+                activeTab === 'source'
+                  ? 'bg-white text-[#18181B] shadow-sm'
+                  : 'text-[#71717A] hover:text-[#18181B]'
+              }`}
+            >
+              Source
+            </button>
+          </div>
+
+          <div className="hidden sm:flex items-center bg-[#F4F4F5] p-0.5 rounded-full">
+            {Object.entries(DEVICE_PRESETS).map(([key, preset]) => {
+              const Icon = preset.Icon;
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => {
+                    setDevice(key);
+                    setDetailNotice(`${preset.label} preview selected.`);
+                  }}
+                  aria-label={`${preset.label} view`}
+                  className={`p-1.5 rounded-full transition-all ${
+                    device === key
+                      ? 'bg-white text-[#18181B] shadow-sm'
+                      : 'text-[#71717A] hover:text-[#18181B]'
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                </button>
+              );
+            })}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => {
+              setPreviewRevision((revision) => revision + 1);
+              setDetailNotice('Preview restarted.');
+            }}
+            aria-label="Replay animation"
+            className="p-2 rounded-full text-[#71717A] hover:text-[#18181B] hover:bg-[#F4F4F5] transition-colors"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+          </button>
+          <button
+            type="button"
+            onClick={() => copyText(window.location.href, 'Component link copied.')}
+            aria-label="Share component"
+            className="p-2 rounded-full text-[#71717A] hover:text-[#18181B] hover:bg-[#F4F4F5] transition-colors"
+          >
+            <Share className="w-3.5 h-3.5" />
+          </button>
+          <button
+            type="button"
+            onClick={() => window.open('https://github.com/novamotion-ui/novamotion/issues/new', '_blank', 'noopener,noreferrer')}
+            aria-label="Report issue"
+            className="p-2 rounded-full text-[#71717A] hover:text-[#18181B] hover:bg-[#F4F4F5] transition-colors"
+          >
+            <Bug className="w-3.5 h-3.5" />
+          </button>
+
+          <button
+            type="button"
+            onClick={handleCopyPrompt}
+            className="inline-flex items-center gap-1.5 bg-[#18181B] hover:bg-[#27272A] active:scale-[0.98] text-white px-4 py-2 rounded-full text-[13px] font-semibold transition-all"
+          >
+            {promptCopied ? (
+              <>
+                <Check className="w-3.5 h-3.5 text-[#FFDD00]" />
+                <span>Copied!</span>
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Copy prompt</span>
+              </>
+            )}
+          </button>
+        </div>
+      </section>
+    </div>
   );
 }
